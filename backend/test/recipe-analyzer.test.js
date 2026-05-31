@@ -2,6 +2,7 @@ const assert = require("node:assert/strict");
 const test = require("node:test");
 const {
   analyzeRecipeContent,
+  compactRecipeContent,
   createAnalysisMessages,
   parseJsonResponse,
 } = require("../src/recipe-analyzer");
@@ -52,6 +53,31 @@ test("createAnalysisMessages asks for JSON-only structured recipe output", () =>
   assert.equal(messages[0].role, "system");
   assert.match(messages[0].content, /JSON/);
   assert.match(messages[1].content, /ingredientList/);
+});
+
+test("compactRecipeContent omits full text when structured recipe data exists", () => {
+  const compact = compactRecipeContent({
+    sourceUrl: "https://example.test",
+    extractionMethod: "json-ld",
+    structuredRecipe: { title: "Toast", ingredients: ["1 Brot"] },
+    text: "Navigation Kommentare langer Text",
+  });
+
+  assert.deepEqual(compact, {
+    sourceUrl: "https://example.test",
+    extractionMethod: "json-ld",
+    structuredRecipe: { title: "Toast", ingredients: ["1 Brot"] },
+  });
+});
+
+test("compactRecipeContent limits fallback text length", () => {
+  const compact = compactRecipeContent({
+    sourceUrl: "https://example.test",
+    extractionMethod: "text",
+    text: "x".repeat(13000),
+  });
+
+  assert.equal(compact.text.length, 12000);
 });
 
 test("parseJsonResponse accepts plain JSON and fenced JSON", () => {

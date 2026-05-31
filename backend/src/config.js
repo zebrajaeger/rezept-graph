@@ -3,8 +3,9 @@ const path = require("node:path");
 const { CliError } = require("./errors");
 
 const CACHE_MODES = new Set(["cache-first", "refresh", "offline"]);
+const LLM_PROVIDERS = new Set(["openai", "ollama"]);
 
-function loadConfig(configPath, cwd = process.cwd()) {
+function loadConfig(configPath, cwd = process.cwd(), env = process.env) {
   const absolutePath = path.resolve(cwd, configPath);
   if (!fs.existsSync(absolutePath)) {
     throw new CliError(`Config-Datei nicht gefunden: ${absolutePath}`);
@@ -18,7 +19,7 @@ function loadConfig(configPath, cwd = process.cwd()) {
   }
 
   validateConfig(parsed, absolutePath);
-  return normalizeConfig(parsed, path.dirname(absolutePath));
+  return normalizeConfig(parsed, path.dirname(absolutePath), env);
 }
 
 function mergeConfigWithArgs(config, args, cwd = process.cwd()) {
@@ -47,9 +48,20 @@ function validateConfig(config, sourcePath) {
     throw new CliError(`Config-Datei muss ein JSON-Objekt enthalten: ${sourcePath}`);
   }
 
-  if (!isNonEmptyString(config.llm?.baseUrl)) missing.push("llm.baseUrl");
+  if (!isNonEmptyString(config.llm?.baseUrl) && !isNonEmptyString(config.llm?.baseUrlEnv)) {
+    missing.push("llm.baseUrl");
+  }
+  if (config.llm?.baseUrlEnv !== undefined && !isNonEmptyString(config.llm.baseUrlEnv)) {
+    missing.push("llm.baseUrlEnv");
+  }
   if (!isNonEmptyString(config.llm?.model)) missing.push("llm.model");
   if (!isNonEmptyString(config.llm?.apiKeyEnv)) missing.push("llm.apiKeyEnv");
+  if (
+    config.llm?.provider !== undefined &&
+    (!isNonEmptyString(config.llm.provider) || !LLM_PROVIDERS.has(config.llm.provider))
+  ) {
+    missing.push("llm.provider");
+  }
   if (!Number.isInteger(config.llm?.timeoutMs) || config.llm.timeoutMs < 1) {
     missing.push("llm.timeoutMs");
   }
@@ -68,10 +80,20 @@ function validateConfig(config, sourcePath) {
   }
 }
 
-function normalizeConfig(config, baseDir) {
+function normalizeConfig(config, baseDir, env = process.env) {
+  const baseUrl = config.llm.baseUrlEnv
+    ? env[config.llm.baseUrlEnv] || config.llm.baseUrl
+    : config.llm.baseUrl;
+
+  if (!isNonEmptyString(baseUrl)) {
+    throw new CliError(`LLM Base-URL fehlt. Erwartete Umgebungsvariable: ${config.llm.baseUrlEnv}`);
+  }
+
   return {
     llm: {
-      baseUrl: config.llm.baseUrl.replace(/\/+$/, ""),
+      provider: config.llm.provider || "openai",
+      baseUrl: baseUrl.replace(/\/+$/, ""),
+      baseUrlEnv: config.llm.baseUrlEnv,
       model: config.llm.model,
       apiKeyEnv: config.llm.apiKeyEnv,
       timeoutMs: config.llm.timeoutMs,

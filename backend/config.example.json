@@ -1,6 +1,8 @@
 {
   "llm": {
+    "provider": "openai",
     "baseUrl": "http://localhost:1234/v1",
+    "baseUrlEnv": "OPENAI_BASE_URL",
     "model": "local-model",
     "apiKeyEnv": "OPENAI_API_KEY",
     "timeoutMs": 60000

@@ -33,16 +33,21 @@ Aufgenommen werden nur Rezepte von `https://www.chefkoch.de/rs/s0/zufall/Rezepte
 Siehe `backend/config.example.json`. Die LLM-Konfiguration ist OpenAI-kompatibel:
 
 - `llm.baseUrl`
+- `llm.baseUrlEnv` optional, falls die Base-URL aus `.env` kommen soll
+- `llm.provider`: `openai` fuer OpenAI-kompatible `/v1/chat/completions`, `ollama` fuer Ollama native `/api/chat`
 - `llm.model`
 - `llm.apiKeyEnv`
 - `llm.timeoutMs`
 
 Lokale Anbieter wie LM Studio oder kompatible Gateways koennen verwendet werden, solange sie `/v1/chat/completions` anbieten.
 
-Die CLI laedt `.env` automatisch aus dem aktuellen Arbeitsverzeichnis, dessen Parent-Verzeichnis und dem Config-Verzeichnis. Vorhandene Shell-Variablen haben Vorrang. Wenn deine Config also `"apiKeyEnv": "OLLAMA_API_KEY"` setzt, kann der Wert in `.env` stehen:
+Fuer Ollama Cloud direct sollte die Config `provider: "ollama"` verwenden und `BASE_URL` auf `https://ollama.com` zeigen. Die Ollama-Cloud-Dokumentation beschreibt den direkten Cloud-Zugriff ueber `https://ollama.com/api/chat` mit `Authorization: Bearer ...`.
+
+Die CLI laedt `.env` automatisch aus dem aktuellen Arbeitsverzeichnis, dessen Parent-Verzeichnis und dem Config-Verzeichnis. Vorhandene Shell-Variablen haben Vorrang. Wenn deine Config also `"apiKeyEnv": "API_KEY"` und `"baseUrlEnv": "BASE_URL"` setzt, koennen die Werte in `.env` stehen:
 
 ```bash
-OLLAMA_API_KEY=...
+API_KEY=...
+BASE_URL=...
 ```
 
 ### Tests

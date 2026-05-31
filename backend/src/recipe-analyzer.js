@@ -10,6 +10,7 @@ async function analyzeRecipeContent({ content, llmConfig, client }) {
 }
 
 function createAnalysisMessages(content) {
+  const compactContent = compactRecipeContent(content);
   return [
     {
       role: "system",
@@ -60,13 +61,29 @@ function createAnalysisMessages(content) {
             ],
             ingredientList: ["string"],
           },
-          content,
+          content: compactContent,
         },
         null,
         2
       ),
     },
   ];
+}
+
+function compactRecipeContent(content) {
+  if (content?.structuredRecipe) {
+    return {
+      sourceUrl: content.sourceUrl,
+      extractionMethod: content.extractionMethod,
+      structuredRecipe: content.structuredRecipe,
+    };
+  }
+
+  return {
+    sourceUrl: content?.sourceUrl,
+    extractionMethod: content?.extractionMethod || "text",
+    text: String(content?.text || "").slice(0, 12000),
+  };
 }
 
 function parseJsonResponse(rawResponse) {
@@ -84,6 +101,7 @@ function parseJsonResponse(rawResponse) {
 
 module.exports = {
   analyzeRecipeContent,
+  compactRecipeContent,
   createAnalysisMessages,
   parseJsonResponse,
 };

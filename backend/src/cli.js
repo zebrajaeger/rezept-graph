@@ -10,7 +10,7 @@ const { loadDotEnv } = require("./env-loader");
 const { CliError } = require("./errors");
 const { extractRecipeContent } = require("./extractor");
 const { fetchRecipeHtml } = require("./fetcher");
-const { createOpenAiCompatibleClient } = require("./llm-client");
+const { createLlmClient } = require("./llm-client");
 const { analyzeRecipeContent } = require("./recipe-analyzer");
 const { writeRecipeOutputs } = require("./output-writer");
 const { readUrlFile } = require("./url-file");
@@ -27,7 +27,7 @@ async function main(argv = process.argv.slice(2), env = process.env, deps = {}) 
 
   if (args.command === "analyze") {
     loadDotEnv({ cwd, configPath: args.configPath, env });
-    const config = mergeConfigWithArgs(loadConfig(args.configPath, cwd), args, cwd);
+    const config = mergeConfigWithArgs(loadConfig(args.configPath, cwd, env), args, cwd);
     validateUrlFile(urlsPath);
     const urls = readUrlFile(urlsPath);
     if (urls.length === 0) {
@@ -61,7 +61,7 @@ async function main(argv = process.argv.slice(2), env = process.env, deps = {}) 
         llmConfig: config.llm,
         client:
           deps.llmClient ||
-          createOpenAiCompatibleClient(config.llm, {
+          createLlmClient(config.llm, {
             env,
             fetcher: deps.llmFetcher || fetch,
           }),
