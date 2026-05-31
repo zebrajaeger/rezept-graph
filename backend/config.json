@@ -1,0 +1,17 @@
+{
+  "llm": {
+    "provider": "ollama",
+    "baseUrl": "https://ollama.com",
+    "model": "kimi-k2.5",
+    "apiKeyEnv": "API_KEY",
+    "timeoutMs": 180000
+  },
+  "cache": {
+    "directory": ".cache/recipe-pages",
+    "mode": "cache-first"
+  },
+  "output": {
+    "directory": "outputs",
+    "includeIntermediateStates": true
+  }
+}

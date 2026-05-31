@@ -1,0 +1,1 @@
+npm start -- analyze --config config.json --urls examples/recipe-urls.txt
