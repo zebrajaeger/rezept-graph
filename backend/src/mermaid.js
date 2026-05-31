@@ -8,9 +8,10 @@ function renderMermaid(analysis, options = {}) {
     ? analysis.edges
     : bridgeHiddenIntermediateEdges(analysis.edges, analysis.nodes);
 
-  const lines = ["flowchart TD"];
+  const lines = ["flowchart TD", ...styleLines()];
   for (const node of visibleNodes) {
-    lines.push(`  ${safeId(node.id)}["${escapeLabel(formatNodeLabel(node))}"]`);
+    lines.push(`  ${renderNode(node)}`);
+    lines.push(`  class ${safeId(node.id)} ${classForNodeType(node.type)};`);
   }
   for (const edge of edges) {
     if (!visibleIds.has(edge.from) || !visibleIds.has(edge.to)) continue;
@@ -18,6 +19,32 @@ function renderMermaid(analysis, options = {}) {
     lines.push(`  ${safeId(edge.from)} -->|${escapeLabel(label)}| ${safeId(edge.to)}`);
   }
   return `${lines.join("\n")}\n`;
+}
+
+function styleLines() {
+  return [
+    "  classDef ingredient fill:#e6f4ea,stroke:#2f6f4e,stroke-width:2px,color:#173b28;",
+    "  classDef process fill:#e8f1ff,stroke:#2458a6,stroke-width:2px,color:#102c57;",
+    "  classDef intermediate fill:#fff5cc,stroke:#9a6b00,stroke-width:2px,color:#4a3300;",
+  ];
+}
+
+function renderNode(node) {
+  const id = safeId(node.id);
+  const label = escapeLabel(formatNodeLabel(node));
+  if (node.type === "ingredient") {
+    return `${id}(["${label}"])`;
+  }
+  if (node.type === "intermediate") {
+    return `${id}(["${label}"])`;
+  }
+  return `${id}["${label}"]`;
+}
+
+function classForNodeType(type) {
+  if (type === "ingredient") return "ingredient";
+  if (type === "intermediate") return "intermediate";
+  return "process";
 }
 
 function bridgeHiddenIntermediateEdges(edges, nodes) {
@@ -62,5 +89,6 @@ function escapeLabel(value) {
 }
 
 module.exports = {
+  classForNodeType,
   renderMermaid,
 };
