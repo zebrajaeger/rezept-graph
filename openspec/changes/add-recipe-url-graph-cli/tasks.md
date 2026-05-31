@@ -42,11 +42,11 @@
 
 ## 6. OpenAI-Compatible LLM Integration
 
-- [ ] 6.1 Implement an OpenAI-compatible chat/completions client using configured base URL, model, API key source, and timeout.
-- [ ] 6.2 Create the recipe analysis prompt with explicit JSON-only output instructions.
-- [ ] 6.3 Add analysis error handling for network failures, provider errors, invalid JSON, and schema validation failures.
-- [ ] 6.4 Add a provider abstraction so tests can use a fake LLM response without network access.
-- [ ] 6.5 Add tests for successful fake analysis and invalid fake analysis.
+- [x] 6.1 Implement an OpenAI-compatible chat/completions client using configured base URL, model, API key source, and timeout.
+- [x] 6.2 Create the recipe analysis prompt with explicit JSON-only output instructions.
+- [x] 6.3 Add analysis error handling for network failures, provider errors, invalid JSON, and schema validation failures.
+- [x] 6.4 Add a provider abstraction so tests can use a fake LLM response without network access.
+- [x] 6.5 Add tests for successful fake analysis and invalid fake analysis.
 
 ## 7. Output Generation
 
