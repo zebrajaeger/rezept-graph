@@ -33,12 +33,12 @@
 
 ## 5. Recipe Analysis Schema
 
-- [ ] 5.1 Define the recipe analysis JSON schema for metadata, ingredients, nodes, edges, and ingredient list.
-- [ ] 5.2 Add schema validation for LLM responses.
-- [ ] 5.3 Add normalized ingredient fields while preserving original ingredient text.
-- [ ] 5.4 Add graph node types for ingredients, processing steps, and intermediate states.
-- [ ] 5.5 Add edge types for ingredient usage, step order, and produced intermediate states.
-- [ ] 5.6 Add tests for valid and invalid recipe analysis payloads.
+- [x] 5.1 Define the recipe analysis JSON schema for metadata, ingredients, nodes, edges, and ingredient list.
+- [x] 5.2 Add schema validation for LLM responses.
+- [x] 5.3 Add normalized ingredient fields while preserving original ingredient text.
+- [x] 5.4 Add graph node types for ingredients, processing steps, and intermediate states.
+- [x] 5.5 Add edge types for ingredient usage, step order, and produced intermediate states.
+- [x] 5.6 Add tests for valid and invalid recipe analysis payloads.
 
 ## 6. OpenAI-Compatible LLM Integration
 
