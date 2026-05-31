@@ -3,13 +3,18 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const test = require("node:test");
+const { writeCacheEntry } = require("../src/cache");
 const { main } = require("../src/cli");
 
-test("analyze command does not invoke Chefkoch seeding fetcher", async () => {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-"));
+test("CLI analyzes cached HTML offline and writes recipe outputs", async () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-e2e-"));
   const configPath = path.join(tmpDir, "config.json");
   const urlsPath = path.join(tmpDir, "recipe-urls.txt");
+  const cacheDir = path.join(tmpDir, "cache");
+  const outputDir = path.join(tmpDir, "outputs");
+  const url = "https://example.test/recipe";
 
+  fs.writeFileSync(urlsPath, `${url}\n`);
   fs.writeFileSync(
     configPath,
     JSON.stringify({
@@ -20,46 +25,40 @@ test("analyze command does not invoke Chefkoch seeding fetcher", async () => {
         timeoutMs: 1000,
       },
       cache: {
-        directory: "cache",
-        mode: "cache-first",
+        directory: cacheDir,
+        mode: "offline",
       },
       output: {
-        directory: "outputs",
-        includeIntermediateStates: true,
+        directory: outputDir,
+        includeIntermediateStates: false,
       },
     })
   );
-  fs.writeFileSync(urlsPath, "https://example.test/recipe.html\n");
+  writeCacheEntry(cacheDir, {
+    url,
+    html: `
+      <script type="application/ld+json">
+        {"@type":"Recipe","name":"Toast","recipeIngredient":["1 Scheibe Brot"]}
+      </script>
+    `,
+    fetchedAt: "2026-05-31T00:00:00.000Z",
+    status: 200,
+    contentType: "text/html",
+  });
 
-  const requestedUrls = [];
   const exitCode = await main(
-    [
-      "analyze",
-      "--config",
-      configPath,
-      "--urls",
-      urlsPath,
-      "--cache-mode",
-      "cache-first",
-    ],
+    ["analyze", "--config", configPath, "--urls", urlsPath],
     {},
     {
-      fetcher: async (url) => {
-        requestedUrls.push(url);
-        return {
-          ok: true,
-          status: 200,
-          url,
-          headers: { get: () => "text/html" },
-          text: async () => "<html><body>Toast toasten.</body></html>",
-        };
+      fetcher: async () => {
+        throw new Error("offline mode must not fetch");
       },
       llmClient: {
         complete: async () =>
           JSON.stringify({
             metadata: {
               title: "Toast",
-              sourceUrl: "https://example.test/recipe.html",
+              sourceUrl: url,
               servings: "1 Portion",
             },
             ingredients: [
@@ -85,5 +84,8 @@ test("analyze command does not invoke Chefkoch seeding fetcher", async () => {
   );
 
   assert.equal(exitCode, 0);
-  assert.deepEqual(requestedUrls, ["https://example.test/recipe.html"]);
+  const outputFiles = fs.readdirSync(outputDir);
+  assert.equal(outputFiles.some((file) => file.endsWith(".recipe.json")), true);
+  assert.equal(outputFiles.some((file) => file.endsWith(".ingredients.txt")), true);
+  assert.equal(outputFiles.some((file) => file.endsWith(".mmd")), true);
 });

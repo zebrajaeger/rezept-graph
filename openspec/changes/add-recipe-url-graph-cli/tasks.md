@@ -59,7 +59,7 @@
 
 ## 8. End-to-End Workflow
 
-- [ ] 8.1 Wire the CLI pipeline from URL file to cache, extraction, LLM analysis, validation, and output generation.
-- [ ] 8.2 Add an offline end-to-end fixture test using cached HTML and fake LLM output.
-- [ ] 8.3 Add README usage notes for the CLI, config file, sample URL file, cache modes, output files, and Chefkoch sample URL seeding.
-- [ ] 8.4 Run the full verification command for the backend package and fix any failures.
+- [x] 8.1 Wire the CLI pipeline from URL file to cache, extraction, LLM analysis, validation, and output generation.
+- [x] 8.2 Add an offline end-to-end fixture test using cached HTML and fake LLM output.
+- [x] 8.3 Add README usage notes for the CLI, config file, sample URL file, cache modes, output files, and Chefkoch sample URL seeding.
+- [x] 8.4 Run the full verification command for the backend package and fix any failures.

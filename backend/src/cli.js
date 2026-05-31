@@ -2,10 +2,16 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { getRecipePage } = require("./cache");
 const { parseArgs, printHelp } = require("./args");
 const { seedChefkochUrls } = require("./chefkoch-seeder");
 const { loadConfig, mergeConfigWithArgs } = require("./config");
 const { CliError } = require("./errors");
+const { extractRecipeContent } = require("./extractor");
+const { fetchRecipeHtml } = require("./fetcher");
+const { analyzeRecipeContent } = require("./recipe-analyzer");
+const { writeRecipeOutputs } = require("./output-writer");
+const { readUrlFile } = require("./url-file");
 
 async function main(argv = process.argv.slice(2), env = process.env, deps = {}) {
   const args = parseArgs(argv);
@@ -20,6 +26,11 @@ async function main(argv = process.argv.slice(2), env = process.env, deps = {}) 
   if (args.command === "analyze") {
     const config = mergeConfigWithArgs(loadConfig(args.configPath, cwd), args, cwd);
     validateUrlFile(urlsPath);
+    const urls = readUrlFile(urlsPath);
+    if (urls.length === 0) {
+      throw new CliError(`URL-Datei enthaelt keine verarbeitbaren URLs: ${urlsPath}`);
+    }
+
     process.stdout.write(
       [
         "Analyse-Konfiguration geladen.",
@@ -29,6 +40,37 @@ async function main(argv = process.argv.slice(2), env = process.env, deps = {}) 
         `Zwischenzustaende: ${config.output.includeIntermediateStates ? "show" : "hide"}`,
       ].join("\n") + "\n"
     );
+
+    for (const url of urls) {
+      const page = await getRecipePage({
+        url,
+        cacheDir: config.cache.directory,
+        cacheMode: config.cache.mode,
+        fetcher: (pageUrl) =>
+          fetchRecipeHtml(pageUrl, {
+            fetcher: deps.fetcher || fetch,
+            timeoutMs: 30000,
+          }),
+      });
+      const content = extractRecipeContent(page.html, url);
+      const analysis = await analyzeRecipeContent({
+        content,
+        llmConfig: config.llm,
+        client: deps.llmClient,
+      });
+      const outputs = writeRecipeOutputs(analysis, config.output.directory, {
+        includeIntermediateStates: config.output.includeIntermediateStates,
+      });
+
+      process.stdout.write(
+        [
+          `Analysiert: ${url}`,
+          `  JSON: ${outputs.jsonPath}`,
+          `  Zutaten: ${outputs.ingredientsPath}`,
+          `  Mermaid: ${outputs.mermaidPath}`,
+        ].join("\n") + "\n"
+      );
+    }
     return 0;
   }
 
