@@ -8,12 +8,12 @@
 
 ## 2. Sample URL Seeding
 
-- [ ] 2.1 Implement an explicit Chefkoch sample URL seeding command that is separate from normal analysis.
-- [ ] 2.2 Fetch Chefkoch random recipe results from `https://www.chefkoch.de/rs/s0/zufall/Rezepte.html` only when the seeding command is invoked.
-- [ ] 2.3 Parse discovered recipe URLs, ratings, and rating counts from Chefkoch result content.
-- [ ] 2.4 Add only recipes with rating greater than `4` and more than `10` ratings to the sample URL file.
-- [ ] 2.5 Deduplicate seeded URLs against existing sample URL file entries.
-- [ ] 2.6 Add tests proving normal analysis does not invoke Chefkoch random recipe discovery.
+- [x] 2.1 Implement an explicit Chefkoch sample URL seeding command that is separate from normal analysis.
+- [x] 2.2 Fetch Chefkoch random recipe results from `https://www.chefkoch.de/rs/s0/zufall/Rezepte.html` only when the seeding command is invoked.
+- [x] 2.3 Parse discovered recipe URLs, ratings, and rating counts from Chefkoch result content.
+- [x] 2.4 Add only recipes with rating greater than `4` and more than `10` ratings to the sample URL file.
+- [x] 2.5 Deduplicate seeded URLs against existing sample URL file entries.
+- [x] 2.6 Add tests proving normal analysis does not invoke Chefkoch random recipe discovery.
 
 ## 3. URL Fetching and Cache
 
