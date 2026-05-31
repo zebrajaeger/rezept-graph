@@ -5,4 +5,4 @@
 # Nutze dafuer spaeter explizit:
 #   npm start -- seed-chefkoch --urls examples/recipe-urls.txt
 
-https://www.chefkoch.de/rezepte/3746511569689014/Apfelkuchen.html
+https://www.chefkoch.de/rezepte/1140221220253617/Supersaftiger-Apfelkuchen.html
