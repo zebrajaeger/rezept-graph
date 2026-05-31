@@ -50,12 +50,12 @@
 
 ## 7. Output Generation
 
-- [ ] 7.1 Write structured recipe JSON output per analyzed URL.
-- [ ] 7.2 Generate a human-readable ingredient list from analyzed ingredients.
-- [ ] 7.3 Generate Mermaid flowchart output from recipe graph nodes and edges.
-- [ ] 7.4 Add rendering option to include intermediate state nodes.
-- [ ] 7.5 Add rendering option to hide intermediate state nodes while preserving readable flow where possible.
-- [ ] 7.6 Add tests for deterministic JSON and Mermaid output from fixed analysis fixtures.
+- [x] 7.1 Write structured recipe JSON output per analyzed URL.
+- [x] 7.2 Generate a human-readable ingredient list from analyzed ingredients.
+- [x] 7.3 Generate Mermaid flowchart output from recipe graph nodes and edges.
+- [x] 7.4 Add rendering option to include intermediate state nodes.
+- [x] 7.5 Add rendering option to hide intermediate state nodes while preserving readable flow where possible.
+- [x] 7.6 Add tests for deterministic JSON and Mermaid output from fixed analysis fixtures.
 
 ## 8. End-to-End Workflow
 
