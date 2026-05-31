@@ -1,10 +1,10 @@
 ## 1. CLI Foundation
 
-- [ ] 1.1 Decide and document the backend CLI entry point and command shape.
-- [ ] 1.2 Add CLI argument parsing for config path, URL file path, cache mode, output directory, intermediate-state rendering, and sample URL seeding.
-- [ ] 1.3 Add a sample URL file with commented examples and at least one placeholder recipe URL.
-- [ ] 1.4 Add config loading for LLM provider settings, cache directory, and output defaults.
-- [ ] 1.5 Add validation and clear error messages for missing URL files, invalid config files, and unsupported cache modes.
+- [x] 1.1 Decide and document the backend CLI entry point and command shape.
+- [x] 1.2 Add CLI argument parsing for config path, URL file path, cache mode, output directory, intermediate-state rendering, and sample URL seeding.
+- [x] 1.3 Add a sample URL file with commented examples and at least one placeholder recipe URL.
+- [x] 1.4 Add config loading for LLM provider settings, cache directory, and output defaults.
+- [x] 1.5 Add validation and clear error messages for missing URL files, invalid config files, and unsupported cache modes.
 
 ## 2. Sample URL Seeding
 

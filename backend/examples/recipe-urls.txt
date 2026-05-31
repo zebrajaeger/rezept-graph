@@ -1,0 +1,8 @@
+# Beispiel-URLs fuer die Entwicklung.
+# Leere Zeilen und Zeilen mit # werden ignoriert.
+#
+# Die Chefkoch-Zufallsrezepte werden nicht automatisch abgefragt.
+# Nutze dafuer spaeter explizit:
+#   npm start -- seed-chefkoch --urls examples/recipe-urls.txt
+
+https://www.chefkoch.de/rezepte/3746511569689014/Apfelkuchen.html

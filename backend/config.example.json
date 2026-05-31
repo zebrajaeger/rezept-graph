@@ -1,0 +1,16 @@
+{
+  "llm": {
+    "baseUrl": "http://localhost:1234/v1",
+    "model": "local-model",
+    "apiKeyEnv": "OPENAI_API_KEY",
+    "timeoutMs": 60000
+  },
+  "cache": {
+    "directory": ".cache/recipe-pages",
+    "mode": "cache-first"
+  },
+  "output": {
+    "directory": "outputs",
+    "includeIntermediateStates": true
+  }
+}
