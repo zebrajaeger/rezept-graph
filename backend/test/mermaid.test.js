@@ -1,6 +1,13 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { classForNodeType, renderMermaid } = require("../src/mermaid");
+const {
+  classForNode,
+  classForNodeType,
+  isColdPassiveProcess,
+  isHotProcess,
+  isPassiveProcess,
+  renderMermaid,
+} = require("../src/mermaid");
 
 function analysis() {
   return {
@@ -19,6 +26,12 @@ function analysis() {
         label: "Backen",
         temperature: "180 C",
       },
+      {
+        id: "step_rest",
+        type: "process",
+        label: "Teig ruhen lassen",
+        duration: "30 Minuten",
+      },
     ],
     edges: [
       { from: "ing_flour", to: "step_mix", type: "used_in", label: "verwenden" },
@@ -36,6 +49,8 @@ test("renderMermaid includes useful timing and temperature details", () => {
   assert.match(mermaid, /classDef ingredient/);
   assert.match(mermaid, /class ing_flour ingredient;/);
   assert.match(mermaid, /class step_mix process;/);
+  assert.match(mermaid, /class step_bake processHot;/);
+  assert.match(mermaid, /class step_rest processColdPassive;/);
   assert.match(mermaid, /class state_dough intermediate;/);
 });
 
@@ -49,4 +64,25 @@ test("classForNodeType maps unknown node types to process styling", () => {
   assert.equal(classForNodeType("ingredient"), "ingredient");
   assert.equal(classForNodeType("intermediate"), "intermediate");
   assert.equal(classForNodeType("unknown"), "process");
+});
+
+test("classForNode identifies hot and passive process styles", () => {
+  assert.equal(
+    classForNode({ type: "process", label: "10 Minuten kochen" }),
+    "processHot"
+  );
+  assert.equal(
+    classForNode({ type: "process", label: "Teig abkuehlen lassen" }),
+    "processColdPassive"
+  );
+  assert.equal(
+    classForNode({ type: "process", label: "15 Minuten warten" }),
+    "processPassive"
+  );
+});
+
+test("process classifiers detect temperature and passive wording", () => {
+  assert.equal(isHotProcess({ type: "process", label: "Garen", temperature: "180 C" }), true);
+  assert.equal(isColdPassiveProcess({ type: "process", label: "Abkühlen lassen" }), true);
+  assert.equal(isPassiveProcess({ type: "process", label: "Teig ruhen lassen" }), true);
 });
