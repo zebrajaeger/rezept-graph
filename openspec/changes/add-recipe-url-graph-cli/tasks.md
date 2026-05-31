@@ -17,12 +17,12 @@
 
 ## 3. URL Fetching and Cache
 
-- [ ] 3.1 Implement URL file parsing with support for comments and blank lines.
-- [ ] 3.2 Implement deterministic cache keys for recipe URLs.
-- [ ] 3.3 Implement cache entry storage for raw HTML and metadata.
-- [ ] 3.4 Implement `cache-first`, `refresh`, and `offline` cache modes.
-- [ ] 3.5 Implement HTTP fetching with timeout, user agent, status handling, and content-type metadata.
-- [ ] 3.6 Add tests for URL parsing and cache-mode behavior.
+- [x] 3.1 Implement URL file parsing with support for comments and blank lines.
+- [x] 3.2 Implement deterministic cache keys for recipe URLs.
+- [x] 3.3 Implement cache entry storage for raw HTML and metadata.
+- [x] 3.4 Implement `cache-first`, `refresh`, and `offline` cache modes.
+- [x] 3.5 Implement HTTP fetching with timeout, user agent, status handling, and content-type metadata.
+- [x] 3.6 Add tests for URL parsing and cache-mode behavior.
 
 ## 4. Recipe Content Extraction
 
