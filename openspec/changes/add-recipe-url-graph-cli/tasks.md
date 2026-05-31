@@ -26,10 +26,10 @@
 
 ## 4. Recipe Content Extraction
 
-- [ ] 4.1 Implement extraction of schema.org Recipe JSON-LD when present.
-- [ ] 4.2 Implement cleaned text fallback extraction when structured recipe data is not available.
-- [ ] 4.3 Define the analysis input format passed from extraction to the LLM analyzer.
-- [ ] 4.4 Add fixture tests for structured-data extraction and fallback text extraction.
+- [x] 4.1 Implement extraction of schema.org Recipe JSON-LD when present.
+- [x] 4.2 Implement cleaned text fallback extraction when structured recipe data is not available.
+- [x] 4.3 Define the analysis input format passed from extraction to the LLM analyzer.
+- [x] 4.4 Add fixture tests for structured-data extraction and fallback text extraction.
 
 ## 5. Recipe Analysis Schema
 
