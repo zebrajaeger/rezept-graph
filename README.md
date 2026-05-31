@@ -39,6 +39,12 @@ Siehe `backend/config.example.json`. Die LLM-Konfiguration ist OpenAI-kompatibel
 
 Lokale Anbieter wie LM Studio oder kompatible Gateways koennen verwendet werden, solange sie `/v1/chat/completions` anbieten.
 
+Die CLI laedt `.env` automatisch aus dem aktuellen Arbeitsverzeichnis, dessen Parent-Verzeichnis und dem Config-Verzeichnis. Vorhandene Shell-Variablen haben Vorrang. Wenn deine Config also `"apiKeyEnv": "OLLAMA_API_KEY"` setzt, kann der Wert in `.env` stehen:
+
+```bash
+OLLAMA_API_KEY=...
+```
+
 ### Tests
 
 ```bash

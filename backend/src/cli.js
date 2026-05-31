@@ -6,9 +6,11 @@ const { getRecipePage } = require("./cache");
 const { parseArgs, printHelp } = require("./args");
 const { seedChefkochUrls } = require("./chefkoch-seeder");
 const { loadConfig, mergeConfigWithArgs } = require("./config");
+const { loadDotEnv } = require("./env-loader");
 const { CliError } = require("./errors");
 const { extractRecipeContent } = require("./extractor");
 const { fetchRecipeHtml } = require("./fetcher");
+const { createOpenAiCompatibleClient } = require("./llm-client");
 const { analyzeRecipeContent } = require("./recipe-analyzer");
 const { writeRecipeOutputs } = require("./output-writer");
 const { readUrlFile } = require("./url-file");
@@ -24,6 +26,7 @@ async function main(argv = process.argv.slice(2), env = process.env, deps = {}) 
   const urlsPath = path.resolve(cwd, args.urlsPath);
 
   if (args.command === "analyze") {
+    loadDotEnv({ cwd, configPath: args.configPath, env });
     const config = mergeConfigWithArgs(loadConfig(args.configPath, cwd), args, cwd);
     validateUrlFile(urlsPath);
     const urls = readUrlFile(urlsPath);
@@ -56,7 +59,12 @@ async function main(argv = process.argv.slice(2), env = process.env, deps = {}) 
       const analysis = await analyzeRecipeContent({
         content,
         llmConfig: config.llm,
-        client: deps.llmClient,
+        client:
+          deps.llmClient ||
+          createOpenAiCompatibleClient(config.llm, {
+            env,
+            fetcher: deps.llmFetcher || fetch,
+          }),
       });
       const outputs = writeRecipeOutputs(analysis, config.output.directory, {
         includeIntermediateStates: config.output.includeIntermediateStates,
