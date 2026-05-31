@@ -1,7 +1,11 @@
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
 const test = require("node:test");
 const {
   analyzeRecipeContent,
+  completeWithOptionalCache,
   compactRecipeContent,
   createAnalysisMessages,
   parseJsonResponse,
@@ -108,4 +112,27 @@ test("analyzeRecipeContent rejects invalid fake LLM response", async () => {
     }),
     /Recipe analysis ist ungueltig/
   );
+});
+
+test("completeWithOptionalCache avoids repeated client calls", async () => {
+  const responseCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-response-cache-"));
+  let calls = 0;
+  const client = {
+    complete: async () => {
+      calls += 1;
+      return JSON.stringify(validAnalysis);
+    },
+  };
+  const messages = createAnalysisMessages({ text: "Toast toasten" });
+  const llmConfig = {
+    provider: "ollama",
+    baseUrl: "https://ollama.com",
+    model: "test-model",
+    responseCacheDir,
+  };
+
+  await completeWithOptionalCache({ messages, llmConfig, client });
+  await completeWithOptionalCache({ messages, llmConfig, client });
+
+  assert.equal(calls, 1);
 });

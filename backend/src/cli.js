@@ -28,6 +28,7 @@ async function main(argv = process.argv.slice(2), env = process.env, deps = {}) 
   if (args.command === "analyze") {
     loadDotEnv({ cwd, configPath: args.configPath, env });
     const config = mergeConfigWithArgs(loadConfig(args.configPath, cwd, env), args, cwd);
+    config.llm.responseCacheDir = path.join(config.cache.directory, "llm-responses");
     validateUrlFile(urlsPath);
     const urls = readUrlFile(urlsPath);
     if (urls.length === 0) {

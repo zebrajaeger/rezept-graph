@@ -17,5 +17,8 @@
   ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.15.0"
+  }
 }

@@ -1,12 +1,37 @@
 const { CliError } = require("./errors");
-const { createOpenAiCompatibleClient } = require("./llm-client");
+const { createLlmClient } = require("./llm-client");
+const { getOrCreateLlmResponse } = require("./llm-response-cache");
 const { validateRecipeAnalysis } = require("./recipe-schema");
 
 async function analyzeRecipeContent({ content, llmConfig, client }) {
-  const activeClient = client || createOpenAiCompatibleClient(llmConfig);
-  const rawResponse = await activeClient.complete(createAnalysisMessages(content));
+  const activeClient = client || createLlmClient(llmConfig);
+  const messages = createAnalysisMessages(content);
+  const rawResponse = await completeWithOptionalCache({
+    messages,
+    llmConfig,
+    client: activeClient,
+  });
   const parsed = parseJsonResponse(rawResponse);
   return validateRecipeAnalysis(parsed);
+}
+
+async function completeWithOptionalCache({ messages, llmConfig, client }) {
+  if (!llmConfig?.responseCacheDir) {
+    return client.complete(messages);
+  }
+
+  const cached = await getOrCreateLlmResponse({
+    cacheDir: llmConfig.responseCacheDir,
+    cacheKeyParts: {
+      provider: llmConfig.provider || "openai",
+      baseUrl: llmConfig.baseUrl,
+      model: llmConfig.model,
+      messages,
+    },
+    createResponse: () => client.complete(messages),
+  });
+
+  return cached.content;
 }
 
 function createAnalysisMessages(content) {
@@ -101,6 +126,7 @@ function parseJsonResponse(rawResponse) {
 
 module.exports = {
   analyzeRecipeContent,
+  completeWithOptionalCache,
   compactRecipeContent,
   createAnalysisMessages,
   parseJsonResponse,
