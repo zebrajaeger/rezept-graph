@@ -3,16 +3,20 @@
 ## Basics
 - Für Codeänderungen immer über OpenSpec gehen.
 - Commit Messages immer auf Basis des OpenSpec change Namens machen
+- Test Driven Development. Erst die Tests bauen, dann die Codeänderung implementieren.
+
 ## Code
 - Im Code für Kommentare, Log-Ausgaben etc. immer englisch verwenden.
 
 ## Dokumentation
 - Die Dokumentation ist zweisprachig: englisch und deutsch.
+- Verwende Mermaid Diagramme, wenn es einen Mehrwert bietet.
+- Erzeuge Screenshots und binde sie ein, wenn es einen Mehrwert bietet.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **rezept-graph** (509 symbols, 939 relationships, 39 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **rezept-graph** (648 symbols, 1081 relationships, 40 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 
