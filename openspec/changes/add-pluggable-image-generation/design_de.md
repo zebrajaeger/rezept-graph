@@ -1,0 +1,24 @@
+## Kontext und Ziel
+
+`IconGenerator.generate` ist bereits asynchron. Konfiguration und Herkunftsangaben sind noch Codex-spezifisch. Codex verwendet aktuell das Werkzeug `image_gen.imagegen`; es lädt nicht selbst ein lokales Bildmodell. Der laufende Change für semantische Zutaten bleibt erhalten.
+
+## Architekturentscheidungen
+
+1. **Gemeinsames Bildmodul mit Icon-Brücke:** Prompt, anwendungseigene Zieldatei, optionale unterstützte Größe/Seed und Abbruchsignal bilden den Auftrag. Ergebnis ist ein geprüftes PNG mit Herkunft oder ein typisierter Fehler. Motive, Stilprompts, Bibliothek, Deduplizierung und Rendering bleiben im Icon-Bereich. Bewährte Codex-Prüfungen nicht neu schreiben.
+2. **Asynchron, aber ohne neue öffentliche API:** Eine Promise reicht für die CLI. ComfyUI-Auftragsnummern und Polling bleiben intern; dauerhafte Jobs oder neue HTTP-Endpunkte sind nicht Teil dieses Changes.
+3. **Explizite Auswahl:** `backend: codex-cli | comfyui`; alte Codex-Konfiguration bleibt gültig. ComfyUI erhält Basisadresse, konfigurationsrelativen Workflow-Pfad, Eingabebindungen, Ausgabeknoten, Nutzungsbedingungen und endliche Ressourcenlimits. Zugangsdaten ausschließlich über benannte Umgebungsvariable. Nicht unterstützte Größen-/Seed-Vorgaben vor Auftragserteilung ablehnen, nicht still ignorieren.
+4. **Vertrauenswürdige Workflow-Vorlage:** API-JSON aus einer geprüften Installation verwenden, definierte Knoten und Felder validieren, Werte strukturiert ersetzen. Rezepttext bestimmt weder ausführbare Knoten noch Modelle oder Zieladressen. Einmal einreichen, anhand der Auftragsnummer abfragen und genau ein Bild des festgelegten Ausgabeknotens herunterladen. Mehrdeutigkeit ablehnen. Die konkrete API-Version und Vorlage vor Implementierung der Transportdetails anhand von Fixtures festhalten.
+5. **Begrenzter Lebenszyklus:** Pro Providerinstanz und Prozess ein aktiver ComfyUI-Auftrag, Warteschlange innerhalb der Gesamtlaufzeit. Keine automatische Wiederholung oder Ersatzanbieter. Bei Abbruch nur eigene wartende Remotejobs entfernen, soweit unterstützt; niemals einen globalen Interrupt auf einem geteilten Server senden. Ein bereits laufender Remotejob kann weiterrechnen. Keine verteilte GPU-Sperre versprechen.
+6. **Sichere Bildübernahme:** Zeit-, Antwort-, Download-, Pixel- und Diagnosegrenzen; nur operationseigene temporäre Dateien verändern. Vor Veröffentlichung PNG dekodieren und prüfen. Remote-Dateinamen nie als lokale Pfade verwenden. Nur konfigurierte Herkunft und validierte Bildselektoren, keine beliebigen Antwort-URLs oder fremden Weiterleitungen. HTTP nur für ausdrücklich konfigurierte Loopback-Adressen, entfernte Dienste über HTTPS oder lokalen Tunnel. Keine Zugangsdaten in URLs oder Metadaten. ComfyUI nicht ungeschützt öffentlich bereitstellen.
+7. **Herkunft statt Vermutungen:** Alte Bildpakete unverändert lesen. Neue versionierte Metadaten enthalten Provider, nachgewiesene Laufzeitversion, Workflow-Prüfsumme, angefordertes Modell, tatsächlich nachgewiesene Modellidentität oder „unbekannt“, verfügbare Einstellungen und Bedingungen. Ein Checkpoint-Dateiname beweist keine Modellidentität. Keine erfundene CLI-Version für ComfyUI. Anbieterwechsel regeneriert gültige Bilder nicht automatisch.
+8. **Betrieb unabhängig vom Adapter:** Natives ComfyUI zuerst; Container oder Server verwenden dieselbe API. Treiber, RTX-50-kompatible Laufzeit, Modellkomponenten/Lizenz und gegebenenfalls Docker-/WSL2-GPU-Zugriff dokumentieren. 16 GB VRAM garantieren nicht, dass jedes Modell passt. Kein Modell herunterladen oder Dienst starten, ohne dies separat abzustimmen.
+
+## Risiken und Migration
+
+Workflow-/API-Änderungen durch validierte Bindungen und Offline-Fixtures abfangen. GPU-Speichermangel und Kaltstart durch serielle Aufträge, Zeitgrenzen und Textfallback begrenzen. Abbruch bedeutet nicht zwingend Ende der entfernten Berechnung. Geteilte GPU erfordert bei Bedarf externe Betriebskoordination.
+
+Zuerst fehlschlagende Tests für Vertrag, Konfiguration und alte Metadaten; dann Schnittstelle/Codex-Brücke und danach ComfyUI implementieren. Beispiele und Betriebsanleitungen zweisprachig pflegen. Lokale Nutzerkonfiguration nicht umstellen. Vollständig offline prüfen; Live-Test separat freigeben, maximal ein Bild. Vor Symboländerungen GitNexus-Auswirkungen prüfen. Rückweg: Codex auswählen oder Generierung deaktivieren; Bilder erhalten. Alte Programmversionen können neue Metadaten als Cachemiss behandeln.
+
+## Offene Betriebsentscheidungen
+
+Vor einem Live-Test konkrete ComfyUI-Version, Workflow, Modell, Lizenz und Betriebsort gemeinsam auswählen. Ein Diffusers-Dienst, allgemeine CLI-Plugins, öffentliche Job-API und automatische Infrastrukturverwaltung bleiben spätere Erweiterungen. Offene Codex-Sicherheitsabnahmen werden nicht durch diesen Change erledigt.
