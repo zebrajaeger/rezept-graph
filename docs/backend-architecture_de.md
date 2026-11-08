@@ -2,6 +2,8 @@
 
 [Übersicht](../README.md) · [English](backend-architecture_en.md)
 
+Die automatische SVG-/PNG-Erzeugung ist unter [Graph-Rendering](graph-rendering_de.md) beschrieben.
+
 Das Backend verwendet strikt geprüftes TypeScript, kompiliert nach CommonJS.
 Einfache Funktionen und explizite Imports reichen aus; es gibt weder ein
 Ablauf-Framework noch einen Injection-Container.

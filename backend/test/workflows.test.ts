@@ -14,7 +14,7 @@ test("analysis workflow runs in order with injected dependencies and progress, w
     getRecipePage: async ({ url }) => { calls.push(`page:${url}`); return { html: url }; },
     extractRecipeContent: (html, sourceUrl) => { calls.push(`extract:${html}`); return { sourceUrl, extractionMethod: "text", text: html, structuredRecipe: null }; },
     analyzeRecipeContent: async ({ content }) => { calls.push(`analyze:${content.sourceUrl}`); return recipe; },
-    writeRecipeOutputs: () => { calls.push("write"); return { jsonPath: "a", ingredientsPath: "b", mermaidPath: "c" }; },
+    writeRecipeOutputs: async () => { calls.push("write"); await Promise.resolve(); return { jsonPath: "a", ingredientsPath: "b", mermaidPath: "c", svgPath: "d", pngPath: "e" }; },
   });
   assert.deepEqual(calls, ["page:first", "extract:first", "analyze:first", "write", "progress:first", "page:second", "extract:second", "analyze:second", "write", "progress:second"]);
   assert.equal(results.length, 2);
@@ -26,6 +26,19 @@ test("analysis stops at the first failure and reports no false success", async (
     getRecipePage: async ({ url }) => { visited.push(url); throw new Error("missing page"); },
   }), /missing page/);
   assert.deepEqual(visited, ["first"]);
+});
+
+test("render failure is awaited, reports no success, and prevents later URLs", async () => {
+  const visited: string[] = [];
+  let progress = 0;
+  await assert.rejects(analyzeUrls({ urls: ["first", "second"], config, client: { complete: async () => "{}" }, onProgress: () => { progress++; } }, {
+    getRecipePage: async ({ url }) => { visited.push(url); return { html: "fixture" }; },
+    extractRecipeContent: () => ({ sourceUrl: "first", text: "fixture", extractionMethod: "text", structuredRecipe: null }),
+    analyzeRecipeContent: async () => recipe,
+    writeRecipeOutputs: async () => { await Promise.resolve(); throw new Error("render failed"); },
+  }), /render failed/);
+  assert.deepEqual(visited, ["first"]);
+  assert.equal(progress, 0);
 });
 
 test("discovery workflow persists ordered candidates through injected URL storage", async () => {

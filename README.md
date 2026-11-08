@@ -14,6 +14,7 @@ data, ingredient lists, and Mermaid graphs through a CLI.
 | CLI und Beispiele / CLI and examples | [Bedienung](docs/cli_de.md) | [Usage](docs/cli_en.md) |
 | Konfiguration und Anbieter / Configuration and providers | [Konfiguration](docs/configuration_de.md) | [Configuration](docs/configuration_en.md) |
 | Backend und Datenfluss / Backend and data flow | [Architektur](docs/backend-architecture_de.md) | [Architecture](docs/backend-architecture_en.md) |
+| SVG-/PNG-Rendering / SVG/PNG rendering | [Bildausgabe](docs/graph-rendering_de.md) | [Image outputs](docs/graph-rendering_en.md) |
 
 **Voraussetzung / Requirement:** Node.js **24+**.
 

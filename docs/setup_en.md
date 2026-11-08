@@ -67,6 +67,16 @@ flowchart LR
 
 ## Tests
 
+### Image-rendering prerequisites
+
+Mermaid CLI is a runtime dependency, also installed with `--omit=dev`. Its Puppeteer
+peer normally installs a matching Chrome browser. If browser downloads were skipped,
+run `node node_modules/puppeteer/install.mjs` from `backend` as an explicit setup step.
+Linux systems additionally need Chrome's OS libraries. Recipe analysis never installs
+packages or downloads a browser. `npm test` includes a real-renderer integration test
+requiring that browser; other output tests inject a fake renderer. Platform fonts may
+cause minor visual differences, but both image formats use identical source/settings.
+
 ```bash
 cd backend
 npm test

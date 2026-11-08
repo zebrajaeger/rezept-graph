@@ -2,6 +2,8 @@
 
 [Overview](../README.md) · [Deutsch](backend-architecture_de.md)
 
+Automatic SVG/PNG generation is described in [graph rendering](graph-rendering_en.md).
+
 The backend uses strict TypeScript compiled to CommonJS, with ordinary functions
 and explicit imports. There is no workflow framework or runtime injection container.
 

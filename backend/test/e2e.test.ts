@@ -5,14 +5,17 @@ import path from "node:path";
 import test from "node:test";
 import { writeCacheEntry } from "../src/ingestion/cache";
 import { main } from "../src/cli";
+import { writeFakeOutputs } from "./fixtures/fake-images";
 
-test("CLI analyzes cached HTML offline and writes recipe outputs", async () => {
+test("CLI analyzes cached HTML offline and writes recipe outputs", async (t) => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-e2e-"));
   const configPath = path.join(tmpDir, "config.json");
   const urlsPath = path.join(tmpDir, "recipe-urls.txt");
   const cacheDir = path.join(tmpDir, "cache");
   const outputDir = path.join(tmpDir, "outputs");
   const url = "https://example.test/recipe";
+  let stdout = "";
+  t.mock.method(process.stdout, "write", (chunk: string | Uint8Array) => { stdout += String(chunk); return true; });
 
   fs.writeFileSync(urlsPath, `${url}\n`);
   fs.writeFileSync(
@@ -50,6 +53,7 @@ test("CLI analyzes cached HTML offline and writes recipe outputs", async () => {
     ["analyze", "--config", configPath, "--urls", urlsPath],
     {},
     {
+      writeRecipeOutputs: writeFakeOutputs,
       fetcher: async () => {
         throw new Error("offline mode must not fetch");
       },
@@ -88,4 +92,8 @@ test("CLI analyzes cached HTML offline and writes recipe outputs", async () => {
   assert.equal(outputFiles.some((file) => file.endsWith(".recipe.json")), true);
   assert.equal(outputFiles.some((file) => file.endsWith(".ingredients.txt")), true);
   assert.equal(outputFiles.some((file) => file.endsWith(".mmd")), true);
+  assert.equal(outputFiles.some((file) => file.endsWith(".svg")), true);
+  assert.equal(outputFiles.some((file) => file.endsWith(".png")), true);
+  assert.match(stdout, /SVG: .*\.svg/);
+  assert.match(stdout, /PNG: .*\.png/);
 });

@@ -35,7 +35,7 @@ liegen in `backend/examples/`.
 | `--config <path>` | JSON-Konfiguration für LLM, Cache und Ausgabe. |
 | `--urls <path>` | Textdatei mit Rezept-URLs; Leerzeilen und `#`-Kommentare werden ignoriert. |
 | `--cache-mode <cache-first\|refresh\|offline>` | HTML aus dem Cache lesen oder neu abrufen. |
-| `--output-dir <path>` | Zielordner für `.recipe.json`, `.ingredients.txt` und `.mmd`; relativ zum Arbeitsverzeichnis. |
+| `--output-dir <path>` | Zielordner für `.recipe.json`, `.ingredients.txt`, `.mmd`, `.svg` und `.png`; relativ zum Arbeitsverzeichnis. |
 | `--intermediate-states <show\|hide>` | Mermaid-Ausgabe mit oder ohne Zwischenzustände. |
 
 Hilfe nach dem Build, aus dem Hauptverzeichnis:
@@ -43,6 +43,17 @@ Hilfe nach dem Build, aus dem Hauptverzeichnis:
 ```bash
 node backend/src/cli.js --help
 ```
+
+## Erzeugte Graphbilder
+
+Jede erfolgreiche Analyse rendert SVG und PNG aus derselben Mermaid-Quelle mit
+gleichem Theme, weißem Hintergrund und gleichen Layout-Einstellungen. Alle fünf
+Dateien haben denselben Rezeptstamm. Erfolg wird erst nach Erzeugung beider Bilder
+gemeldet. `--intermediate-states` wirkt auch auf beide Bilder. Bei Rendering-
+Fehlern endet die CLI mit Fehlerstatus und verarbeitet keine weiteren URLs.
+Aktuelle Textartefakte bleiben erhalten; beide Bildziele und temporäre Rendering-
+Dateien werden nur für das betroffene Rezept entfernt. Pro Renderer-Aufruf gilt
+ein Zeitlimit von 60 Sekunden; siehe [Einrichtung](setup_de.md).
 
 ## Chefkoch-Beispiel-URLs
 

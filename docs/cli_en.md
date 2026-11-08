@@ -35,7 +35,7 @@ keeps cache and output locations under `backend/`; URL examples remain in
 | `--config <path>` | JSON configuration for the LLM, cache, and output. |
 | `--urls <path>` | Text file containing recipe URLs; blank lines and `#` comments are ignored. |
 | `--cache-mode <cache-first\|refresh\|offline>` | Read HTML from the cache or fetch it again. |
-| `--output-dir <path>` | Destination for `.recipe.json`, `.ingredients.txt`, and `.mmd`, relative to the working directory. |
+| `--output-dir <path>` | Destination for `.recipe.json`, `.ingredients.txt`, `.mmd`, `.svg`, and `.png`, relative to the working directory. |
 | `--intermediate-states <show\|hide>` | Mermaid output with or without intermediate states. |
 
 Help after building, from the project root:
@@ -43,6 +43,16 @@ Help after building, from the project root:
 ```bash
 node backend/src/cli.js --help
 ```
+
+## Generated graph images
+
+Every successful analysis automatically renders SVG and PNG from the same Mermaid
+source with matching theme, white background, and layout settings. All five files
+share a recipe stem. Success is reported only after both images exist.
+`--intermediate-states` applies to both images. On rendering failure, the CLI exits
+unsuccessfully and stops later URLs. Current text artifacts remain, but both image
+destinations and temporary rendering files are removed for that recipe only.
+Each renderer invocation has a 60-second timeout; see [setup](setup_en.md).
 
 ## Chefkoch example URLs
 

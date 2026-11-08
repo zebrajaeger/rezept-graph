@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { main } from "../src/cli";
+import { writeFakeOutputs } from "./fixtures/fake-images";
 
 test("analyze command does not invoke Chefkoch seeding fetcher", async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-"));
@@ -44,6 +45,7 @@ test("analyze command does not invoke Chefkoch seeding fetcher", async () => {
     ],
     {},
     {
+      writeRecipeOutputs: writeFakeOutputs,
       fetcher: async (url) => {
         requestedUrls.push(url);
         return {

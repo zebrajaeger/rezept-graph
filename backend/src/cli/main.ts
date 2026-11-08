@@ -12,9 +12,11 @@ import type { CompletionClient } from "../llm/llm-client";
 import { createCompletionClient } from "../llm/completion-client";
 import { readUrlFile } from "../ingestion/url-file";
 import type { PageFetcher, JsonFetcher } from "../http-types";
+import type { writeRecipeOutputs } from "../output/output-writer";
 
 export async function main(argv = process.argv.slice(2), env: NodeJS.ProcessEnv = process.env, deps: {
   fetcher?: PageFetcher; llmFetcher?: JsonFetcher; llmClient?: CompletionClient;
+  writeRecipeOutputs?: typeof writeRecipeOutputs;
 } = {}) {
   const args = parseArgs(argv);
   if (args.command === "help") {
@@ -54,11 +56,13 @@ export async function main(argv = process.argv.slice(2), env: NodeJS.ProcessEnv 
             `Analysiert: ${url}`,
             `  JSON: ${outputs.jsonPath}`,
             `  Zutaten: ${outputs.ingredientsPath}`,
-            `  Mermaid: ${outputs.mermaidPath}`,
+             `  Mermaid: ${outputs.mermaidPath}`,
+             `  SVG: ${outputs.svgPath}`,
+             `  PNG: ${outputs.pngPath}`,
           ].join("\n") + "\n"
         );
       },
-    });
+    }, deps.writeRecipeOutputs ? { writeRecipeOutputs: deps.writeRecipeOutputs } : {});
     return 0;
   }
 

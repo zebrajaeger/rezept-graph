@@ -4,8 +4,10 @@ import { hashSourceIdentity } from "../source-identity";
 import { renderMermaid } from "./mermaid";
 import { preparePresentation, type RenderOptions } from "../presentation/prepare-presentation";
 import type { RecipeAnalysis, Ingredient } from "../recipe/recipe-types";
+import { renderGraphImages } from "./image-renderer";
+import { CliError } from "../errors";
 
-export function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: string, options: RenderOptions = {}) {
+export async function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: string, options: RenderOptions = {}, deps: { renderImages?: typeof renderGraphImages } = {}) {
   fs.mkdirSync(outputDir, { recursive: true });
   const normalizedAnalysis = {
     ...analysis,
@@ -15,6 +17,13 @@ export function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: string, 
   const jsonPath = path.join(outputDir, `${slug}.recipe.json`);
   const ingredientsPath = path.join(outputDir, `${slug}.ingredients.txt`);
   const mermaidPath = path.join(outputDir, `${slug}.mmd`);
+  const svgPath = path.join(outputDir, `${slug}.svg`);
+  const pngPath = path.join(outputDir, `${slug}.png`);
+  const removeImages = () => {
+    fs.rmSync(svgPath, { force: true });
+    fs.rmSync(pngPath, { force: true });
+  };
+  removeImages();
 
   fs.writeFileSync(jsonPath, `${JSON.stringify(normalizedAnalysis, null, 2)}\n`);
   fs.writeFileSync(ingredientsPath, `${normalizedAnalysis.ingredientList.join("\n")}\n`);
@@ -25,10 +34,31 @@ export function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: string, 
     }))
   );
 
+  const stagingDir = fs.mkdtempSync(path.join(outputDir, ".render-"));
+  try {
+    const stagedMermaid = path.join(stagingDir, "graph.mmd");
+    const stagedSvg = path.join(stagingDir, "graph.svg");
+    const stagedPng = path.join(stagingDir, "graph.png");
+    fs.copyFileSync(mermaidPath, stagedMermaid);
+    await (deps.renderImages || renderGraphImages)({ mermaidPath: stagedMermaid, svgPath: stagedSvg, pngPath: stagedPng });
+    for (const image of [stagedSvg, stagedPng]) {
+      if (!fs.statSync(image).isFile() || fs.statSync(image).size === 0) throw new Error("Renderer produced an empty or invalid image.");
+    }
+    fs.renameSync(stagedSvg, svgPath);
+    fs.renameSync(stagedPng, pngPath);
+  } catch (error) {
+    removeImages();
+    throw new CliError(`Graph image generation failed: ${error instanceof Error ? error.message : String(error)}`);
+  } finally {
+    fs.rmSync(stagingDir, { recursive: true, force: true });
+  }
+
   return {
     jsonPath,
     ingredientsPath,
     mermaidPath,
+    svgPath,
+    pngPath,
   };
 }
 

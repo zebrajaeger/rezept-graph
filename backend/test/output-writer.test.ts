@@ -3,6 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { fakeImages } from "./fixtures/fake-images";
 import {
   formatIngredientLine,
   formatIngredientList,
@@ -54,9 +55,9 @@ test("formatIngredientList derives lines from normalized ingredients", () => {
   );
 });
 
-test("writeRecipeOutputs writes JSON, ingredient list, and Mermaid files", () => {
+test("writeRecipeOutputs writes JSON, ingredient list, and Mermaid files", async () => {
   const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-output-"));
-  const result = writeRecipeOutputs(
+  const result = await writeRecipeOutputs(
     {
       metadata: {
         title: "Apfelkuchen",
@@ -68,7 +69,8 @@ test("writeRecipeOutputs writes JSON, ingredient list, and Mermaid files", () =>
       edges: [],
     },
     outputDir,
-    { includeIntermediateStates: true }
+    { includeIntermediateStates: true },
+    { renderImages: fakeImages }
   );
 
   assert.match(fs.readFileSync(result.jsonPath, "utf8"), /Apfelkuchen/);

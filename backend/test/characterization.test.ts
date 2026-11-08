@@ -10,10 +10,11 @@ import { createOutputSlug, writeRecipeOutputs } from "../src/output/output-write
 import { validateRecipeAnalysis } from "../src/recipe/recipe-schema";
 import { writeCacheEntry } from "../src/ingestion/cache";
 import { analyzeUrls } from "../src/workflows/analyze-urls";
+import { fakeImages, writeFakeOutputs } from "./fixtures/fake-images";
 
 const fixtures = path.resolve(__dirname, "../../test/fixtures");
 
-test("fixed recipe preserves exact serialized outputs, names, prompts and cache identities", (t) => {
+test("fixed recipe preserves exact serialized outputs, names, prompts and cache identities", async (t) => {
   const recipe = validateRecipeAnalysis(JSON.parse(fs.readFileSync(path.join(fixtures, "responsibility-recipe.json"), "utf8")));
   const baseline = JSON.parse(fs.readFileSync(path.join(fixtures, "responsibility-baseline.json"), "utf8"));
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "responsibility-baseline-"));
@@ -25,7 +26,7 @@ test("fixed recipe preserves exact serialized outputs, names, prompts and cache 
   assert.deepEqual(messages, baseline.messages);
   assert.equal(createLlmCacheKey({ baseUrl: "https://example.test/v1", model: "fixture", messages }), baseline.llmKey);
   for (const includeIntermediateStates of [true, false]) {
-    const outputs = writeRecipeOutputs(recipe, tmp, { includeIntermediateStates });
+    const outputs = await writeRecipeOutputs(recipe, tmp, { includeIntermediateStates }, { renderImages: fakeImages });
     assert.equal(path.basename(outputs.jsonPath), `${baseline.slug}.recipe.json`);
     assert.equal(path.basename(outputs.ingredientsPath), `${baseline.slug}.ingredients.txt`);
     assert.equal(path.basename(outputs.mermaidPath), `${baseline.slug}.mmd`);
@@ -52,7 +53,7 @@ test("fixed HTML and completion pass through the offline workflow without leakin
       assert.match(messages[1]!.content, /json-ld/);
       return JSON.stringify(recipe);
     } },
-  });
+  }, { writeRecipeOutputs: writeFakeOutputs });
   const outputs = results[0]!.outputs;
   assert.equal(fs.readFileSync(outputs.jsonPath, "utf8"), baseline.json);
   assert.equal(fs.readFileSync(outputs.ingredientsPath, "utf8"), baseline.ingredients);

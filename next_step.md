@@ -1,13 +1,15 @@
 # Nächster Einstieg / Next entry point
 
-**DE:** Lies den neuen Change `openspec/changes/add-automatic-graph-image-outputs/` und starte die Umsetzung mit `/opsx-apply add-automatic-graph-image-outputs`: SVG und PNG sollen automatisch im normalen CLI-Lauf entstehen.
+**DE:** Prüfe als nächsten kleinen Schritt die gemeldeten npm-Abhängigkeitsschwachstellen und plane notwendige Updates als eigenen OpenSpec-Change. Die Graphbilder unter `backend/outputs/` sind bereits erzeugt.
 
-**EN:** Review `openspec/changes/add-automatic-graph-image-outputs/` and start implementation with `/opsx-apply add-automatic-graph-image-outputs`: SVG and PNG should be generated automatically by normal CLI runs.
+**EN:** As a small next step, investigate the reported npm dependency vulnerabilities and plan necessary updates as a separate OpenSpec change. Graph images have already been generated under `backend/outputs/`.
 
 ## Aktueller Zustand / Current state
 
-- **DE:** Neuer Change `add-automatic-graph-image-outputs` geplant (Proposal, Design, Delta-Spec und Tasks); noch nicht implementiert. Ziel: fünf zusammengehörige Outputs, abgewartetes Rendering und kein veraltetes Bildpaar bei Fehlern.
-- **EN:** New change `add-automatic-graph-image-outputs` planned (proposal, design, delta spec, and tasks), not implemented. Goal: five synchronized outputs, awaited rendering, and no stale image pair after failures.
+- **DE:** Change `add-automatic-graph-image-outputs` implementiert und unter `openspec/changes/archive/2026-11-08-add-automatic-graph-image-outputs/` archiviert; drei Anforderungen in die Hauptspec übernommen. Fünf Outputs, abgewartetes Rendering, temporäre Bildpaare und Fehlerbereinigung. 76 Tests inklusive echtem Mermaid-/Chrome-Test, Typprüfung und Build erfolgreich. Runtime-Abhängigkeit und Paketinhalt geprüft.
+- **EN:** Change `add-automatic-graph-image-outputs` implemented and archived under `openspec/changes/archive/2026-11-08-add-automatic-graph-image-outputs/`; three requirements synced to the main specification. Five outputs, awaited rendering, staged image pairs, and failure cleanup. All 76 tests including real Mermaid/Chrome rendering, type checks, and build pass. Runtime dependency and package contents checked.
+- **DE:** Chefkoch-Probelauf mit Offline-HTML und vorhandenem Antwortcache erfolgreich; SVG und PNG erzeugt. SVG-ViewBox ca. 1407×2463, PNG 1408×2463, passende Beschriftungen und weißer Hintergrund. npm meldet 20 Abhängigkeitsschwachstellen (1 niedrig, 2 mittel, 16 hoch, 1 kritisch); keine automatische potenziell inkompatible Behebung durchgeführt.
+- **EN:** Chefkoch smoke run using offline HTML and the existing response cache succeeded; SVG and PNG generated. SVG viewBox about 1407×2463, PNG 1408×2463, matching labels and white background. npm reports 20 dependency vulnerabilities (1 low, 2 moderate, 16 high, 1 critical); no potentially breaking automatic fixes applied.
 
 - **DE:** Nur OpenAI-kompatible Chat-Completions; Provider-Auswahl vollständig entfernt. 70 automatisierte Tests einschließlich Typprüfung und Build erfolgreich. OpenSpec-Change `support-only-openai-compatible-providers` implementiert, Hauptspec synchronisiert und unter `openspec/changes/archive/2026-11-08-support-only-openai-compatible-providers/` archiviert.
 - **EN:** OpenAI-compatible chat completions only; provider selector fully removed. All 70 automated tests, type checking, and build pass. OpenSpec change `support-only-openai-compatible-providers` implemented, synced to the main specification, and archived under `openspec/changes/archive/2026-11-08-support-only-openai-compatible-providers/`.
@@ -22,6 +24,6 @@ Im Verzeichnis `backend` ausführen / Run from `backend`:
 npm start -- analyze --config ..\config.json --urls examples/recipe-urls.txt
 ```
 
-**DE:** Die CLI erzeugt JSON, Zutatenliste und Mermaid-Datei; PNG/SVG werden nicht automatisch gerendert. Nach erfolgreichem Live-Test den Change prüfen und gegebenenfalls archivieren. Bestehende fremde Änderungen nicht überschreiben.
+**DE:** Die CLI erzeugt automatisch JSON, Zutatenliste, Mermaid, SVG und PNG. Chrome muss installiert sein; siehe `docs/setup_de.md`. Bestehende fremde Änderungen nicht überschreiben.
 
-**EN:** The CLI generates JSON, an ingredient list, and Mermaid source; PNG/SVG are not rendered automatically. After a successful live test, review and optionally archive the change. Do not overwrite unrelated existing work.
+**EN:** The CLI automatically generates JSON, an ingredient list, Mermaid, SVG, and PNG. Chrome must be installed; see `docs/setup_en.md`. Do not overwrite unrelated existing work.

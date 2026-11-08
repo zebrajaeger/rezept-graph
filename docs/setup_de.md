@@ -67,6 +67,17 @@ flowchart LR
 
 ## Tests
 
+### Voraussetzungen für Bild-Rendering
+
+Mermaid CLI ist eine Laufzeitabhängigkeit und wird auch mit `--omit=dev` installiert.
+Die Puppeteer-Peer-Abhängigkeit installiert normalerweise einen passenden Chrome-
+Browser. Bei übersprungenem Browser-Download führe im Backend explizit
+`node node_modules/puppeteer/install.mjs` aus. Linux benötigt zusätzlich Chromes
+Systembibliotheken. Die Rezeptanalyse installiert keine Pakete oder Browser.
+`npm test` enthält einen echten Renderer-Test, der diesen Browser benötigt; andere
+Ausgabetests verwenden einen Fake-Renderer. Plattformschriften können leichte
+Abweichungen erzeugen; beide Formate verwenden dieselbe Quelle und Einstellungen.
+
 ```bash
 cd backend
 npm test

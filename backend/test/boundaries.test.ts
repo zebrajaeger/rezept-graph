@@ -16,7 +16,7 @@ test("responsibility imports stay within concrete allowed boundaries", () => {
     output: ["output", "recipe", "presentation"],
     workflows: ["workflows", "ingestion", "analysis", "discovery", "llm", "output", "config"],
     config: ["config", "cli"],
-    cli: ["cli", "config", "workflows", "llm", "ingestion"],
+    cli: ["cli", "config", "workflows", "llm", "ingestion", "output"],
   };
   for (const [area, dependencies] of Object.entries(allowed)) {
     for (const name of fs.readdirSync(path.join(src, area)).filter((name) => name.endsWith(".ts"))) {

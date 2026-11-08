@@ -7,7 +7,7 @@ import type { Config } from "../config/config";
 import type { CompletionClient } from "../llm/llm-client";
 import type { PageFetcher } from "../http-types";
 
-interface AnalysisResult { url: string; outputs: ReturnType<typeof writeRecipeOutputs> }
+interface AnalysisResult { url: string; outputs: Awaited<ReturnType<typeof writeRecipeOutputs>> }
 interface AnalysisDependencies {
   getRecipePage: (input: Parameters<typeof getRecipePage>[0]) => Promise<{ html: string }>;
   extractRecipeContent: typeof extractRecipeContent;
@@ -28,7 +28,7 @@ export async function analyzeUrls({ urls, config, client, fetcher = fetch, onPro
     });
     const content = active.extractRecipeContent(page.html, url);
     const analysis = await active.analyzeRecipeContent({ content, client });
-    const outputs = active.writeRecipeOutputs(analysis, config.output.directory, {
+    const outputs = await active.writeRecipeOutputs(analysis, config.output.directory, {
       includeIntermediateStates: config.output.includeIntermediateStates,
     });
     const result = { url, outputs };
