@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { writeCacheEntry } from "../src/cache";
+import { writeCacheEntry } from "../src/ingestion/cache";
 import { main } from "../src/cli";
 
 test("CLI analyzes cached HTML offline and writes recipe outputs", async () => {

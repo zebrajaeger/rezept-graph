@@ -6,8 +6,8 @@ import test from "node:test";
 import {
   CHEFKOCH_RANDOM_URL,
   parseChefkochRecipes,
-  seedChefkochUrls,
-} from "../src/chefkoch-seeder";
+} from "../src/discovery/chefkoch-seeder";
+import { seedChefkochUrls } from "../src/workflows/seed-chefkoch-urls";
 
 test("parseChefkochRecipes reads recipe URLs, ratings, and rating counts", () => {
   const html = `

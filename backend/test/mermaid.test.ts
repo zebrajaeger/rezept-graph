@@ -1,14 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { RecipeAnalysis } from "../src/recipe-types";
+import type { RecipeAnalysis } from "../src/recipe/recipe-types";
+import { preparePresentation, isColdPassiveProcess, isHotProcess, isPassiveProcess } from "../src/presentation/prepare-presentation";
 import {
   classForNode,
   classForNodeType,
-  isColdPassiveProcess,
-  isHotProcess,
-  isPassiveProcess,
   renderMermaid,
-} from "../src/mermaid";
+} from "../src/output/mermaid";
 
 function analysis(): Pick<RecipeAnalysis, "nodes" | "edges"> {
   return {
@@ -43,7 +41,7 @@ function analysis(): Pick<RecipeAnalysis, "nodes" | "edges"> {
 }
 
 test("renderMermaid includes useful timing and temperature details", () => {
-  const mermaid = renderMermaid(analysis(), { includeIntermediateStates: true });
+  const mermaid = renderMermaid(preparePresentation(analysis(), { includeIntermediateStates: true }));
   assert.match(mermaid, /Teig ruehren\\n5 Minuten/);
   assert.match(mermaid, /Backen\\n180 C/);
   assert.match(mermaid, /state_dough/);
@@ -56,7 +54,7 @@ test("renderMermaid includes useful timing and temperature details", () => {
 });
 
 test("renderMermaid can hide intermediate states and bridge flow", () => {
-  const mermaid = renderMermaid(analysis(), { includeIntermediateStates: false });
+  const mermaid = renderMermaid(preparePresentation(analysis(), { includeIntermediateStates: false }));
   assert.doesNotMatch(mermaid, /state_dough/);
   assert.match(mermaid, /step_mix -->\|danach\| step_bake/);
 });
@@ -69,15 +67,15 @@ test("classForNodeType maps unknown node types to process styling", () => {
 
 test("classForNode identifies hot and passive process styles", () => {
   assert.equal(
-    classForNode({ type: "process", label: "10 Minuten kochen" }),
+    classForNode({ type: "process", cues: { hot: true, coldPassive: false, passive: false } }),
     "processHot"
   );
   assert.equal(
-    classForNode({ type: "process", label: "Teig abkuehlen lassen" }),
+    classForNode({ type: "process", cues: { hot: false, coldPassive: true, passive: true } }),
     "processColdPassive"
   );
   assert.equal(
-    classForNode({ type: "process", label: "15 Minuten warten" }),
+    classForNode({ type: "process", cues: { hot: false, coldPassive: false, passive: true } }),
     "processPassive"
   );
 });

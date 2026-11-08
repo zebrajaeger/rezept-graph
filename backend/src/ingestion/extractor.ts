@@ -1,4 +1,4 @@
-import { isRecord } from "./unknown-data";
+import { isRecord } from "../unknown-data";
 
 export type StructuredRecipe = ReturnType<typeof normalizeRecipeObject>;
 export interface ExtractedContent {

@@ -3,14 +3,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import type { LlmConfig } from "../src/config";
+import type { LlmConfig } from "../src/config/config";
+import { completeWithOptionalCache } from "../src/llm/completion-client";
 import {
   analyzeRecipeContent,
-  completeWithOptionalCache,
   compactRecipeContent,
   createAnalysisMessages,
   parseJsonResponse,
-} from "../src/recipe-analyzer";
+} from "../src/analysis/recipe-analyzer";
 
 const validAnalysis = {
   metadata: {
@@ -95,7 +95,6 @@ test("parseJsonResponse accepts plain JSON and fenced JSON", () => {
 test("analyzeRecipeContent validates a fake successful LLM response", async () => {
   const analysis = await analyzeRecipeContent({
     content: { text: "Toast toasten" },
-    llmConfig: { baseUrl: "http://example.test", model: "test", apiKeyEnv: "KEY" },
     client: {
       complete: async () => JSON.stringify(validAnalysis),
     },
@@ -108,7 +107,6 @@ test("analyzeRecipeContent rejects invalid fake LLM response", async () => {
   await assert.rejects(
     analyzeRecipeContent({
       content: { text: "Toast toasten" },
-      llmConfig: { baseUrl: "http://example.test", model: "test", apiKeyEnv: "KEY" },
       client: {
         complete: async () => JSON.stringify({ nope: true }),
       },

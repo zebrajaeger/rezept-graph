@@ -1,0 +1,20 @@
+{
+  "metadata": { "title": "Äpfel & Teig", "sourceUrl": "https://example.test/recipe", "servings": null },
+  "ingredients": [{ "id": "ing-flour", "name": "Mehl", "quantity": 1.5, "unit": "kg", "preparation": "gesiebt", "originalText": "1.5 kg Mehl", "confidence": null }],
+  "ingredientList": ["old fallback"],
+  "nodes": [
+    { "id": "ing-flour", "type": "ingredient", "label": "Mehl | \"fein\"" },
+    { "id": "mix", "type": "process", "label": "Rühren", "duration": "5 Minuten", "notes": null },
+    { "id": "dough", "type": "intermediate", "label": "Teig" },
+    { "id": "bake", "type": "process", "label": "Backen und warten", "temperature": "180 C" },
+    { "id": "rest", "type": "process", "label": "Abkühlen lassen", "duration": "30 Minuten" },
+    { "id": "wait", "type": "process", "label": "Warten" }
+  ],
+  "edges": [
+    { "from": "ing-flour", "to": "mix", "type": "used_in", "label": "Zutat | fein" },
+    { "from": "mix", "to": "dough", "type": "produces", "label": null },
+    { "from": "dough", "to": "bake", "type": "before" },
+    { "from": "bake", "to": "rest", "type": "before" },
+    { "from": "rest", "to": "wait", "type": "requires", "label": "" }
+  ]
+}

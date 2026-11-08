@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { CliError } from "./errors";
-import { isRecord } from "./unknown-data";
-import type { CliArgs } from "./args";
+import { CliError } from "../errors";
+import { isRecord } from "../unknown-data";
+import type { CliArgs } from "../cli/args";
 
 export type CacheMode = "cache-first" | "refresh" | "offline";
 export type LlmProvider = "openai" | "ollama";

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { validateRecipeAnalysis } from "../src/recipe-schema";
+import { validateRecipeAnalysis } from "../src/recipe/recipe-schema";
 
 function validAnalysis() {
   return {

@@ -7,7 +7,7 @@ import {
   formatIngredientLine,
   formatIngredientList,
   writeRecipeOutputs,
-} from "../src/output-writer";
+} from "../src/output/output-writer";
 
 test("formatIngredientLine includes quantity, unit, and preparation", () => {
   assert.equal(

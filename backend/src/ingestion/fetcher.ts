@@ -1,6 +1,6 @@
-import { CliError } from "./errors";
-import { errorMessage, isAbortError } from "./unknown-data";
-import type { PageFetcher, PageResponse } from "./http-types";
+import { CliError } from "../errors";
+import { errorMessage, isAbortError } from "../unknown-data";
+import type { PageFetcher, PageResponse } from "../http-types";
 
 export async function fetchRecipeHtml(url: string, options: { fetcher?: PageFetcher; timeoutMs?: number } = {}) {
   const fetcher = options.fetcher || fetch;

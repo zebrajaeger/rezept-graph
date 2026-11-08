@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
-import { createCacheKey } from "./cache";
-import { renderMermaid, type RenderOptions } from "./mermaid";
-import type { RecipeAnalysis, Ingredient } from "./recipe-types";
+import { hashSourceIdentity } from "../source-identity";
+import { renderMermaid } from "./mermaid";
+import { preparePresentation, type RenderOptions } from "../presentation/prepare-presentation";
+import type { RecipeAnalysis, Ingredient } from "../recipe/recipe-types";
 
 export function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: string, options: RenderOptions = {}) {
   fs.mkdirSync(outputDir, { recursive: true });
@@ -19,9 +20,9 @@ export function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: string, 
   fs.writeFileSync(ingredientsPath, `${normalizedAnalysis.ingredientList.join("\n")}\n`);
   fs.writeFileSync(
     mermaidPath,
-    renderMermaid(normalizedAnalysis, {
+    renderMermaid(preparePresentation(normalizedAnalysis, {
       includeIntermediateStates: options.includeIntermediateStates,
-    })
+    }))
   );
 
   return {
@@ -68,6 +69,6 @@ export function createOutputSlug(analysis: Pick<RecipeAnalysis, "metadata">) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 60);
-  const sourceHash = createCacheKey(analysis.metadata?.sourceUrl || title).slice(0, 8);
+  const sourceHash = hashSourceIdentity(analysis.metadata?.sourceUrl || title).slice(0, 8);
   return `${cleaned || "recipe"}-${sourceHash}`;
 }

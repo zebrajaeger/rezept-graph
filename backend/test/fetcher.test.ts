@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { fetchRecipeHtml } from "../src/fetcher";
+import { fetchRecipeHtml } from "../src/ingestion/fetcher";
 
 test("fetchRecipeHtml returns HTML response body and metadata", async () => {
   const page = await fetchRecipeHtml("https://example.test/recipe", {

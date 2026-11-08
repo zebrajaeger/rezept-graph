@@ -1,6 +1,6 @@
 import path from "node:path";
-import { CliError } from "./errors";
-import type { CacheMode } from "./config";
+import { CliError } from "../errors";
+import type { CacheMode } from "../config/config";
 
 interface ArgOptions {
   configPath: string; urlsPath: string; cacheMode?: CacheMode;
@@ -21,7 +21,7 @@ export function parseArgs(argv: string[]): CliArgs {
   const command = tokens.shift() || "analyze";
   const options: UnvalidatedArgs = {
     command,
-    configPath: path.resolve(__dirname, ...(__dirname.includes(`${path.sep}.test-dist${path.sep}`) ? ["..", "..", ".."] : ["..", ".."]), "config.json"),
+    configPath: path.resolve(__dirname, ...(__dirname.includes(`${path.sep}.test-dist${path.sep}`) ? ["..", "..", "..", ".."] : ["..", "..", ".."]), "config.json"),
     urlsPath: path.join("examples", "recipe-urls.txt"),
     cacheMode: undefined,
     outputDir: undefined,

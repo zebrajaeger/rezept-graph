@@ -7,7 +7,7 @@ import {
   createLlmCacheKey,
   getOrCreateLlmResponse,
   stableStringify,
-} from "../src/llm-response-cache";
+} from "../src/llm/llm-response-cache";
 
 test("stableStringify produces stable output independent of object key order", () => {
   assert.equal(stableStringify({ b: 2, a: 1 }), stableStringify({ a: 1, b: 2 }));

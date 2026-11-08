@@ -4,7 +4,7 @@ import {
   cleanHtmlText,
   extractJsonLdRecipe,
   extractRecipeContent,
-} from "../src/extractor";
+} from "../src/ingestion/extractor";
 
 test("extractJsonLdRecipe reads schema.org Recipe data", () => {
   const recipe = extractJsonLdRecipe(`

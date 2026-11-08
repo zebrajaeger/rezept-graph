@@ -4,10 +4,10 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
-import { validateConfig } from "../src/config";
-import { validateRecipeAnalysis } from "../src/recipe-schema";
-import { createLlmClient } from "../src/llm-client";
-import { createLlmCacheKey, getOrCreateLlmResponse } from "../src/llm-response-cache";
+import { validateConfig } from "../src/config/config";
+import { validateRecipeAnalysis } from "../src/recipe/recipe-schema";
+import { createLlmClient } from "../src/llm/llm-client";
+import { createLlmCacheKey, getOrCreateLlmResponse } from "../src/llm/llm-response-cache";
 
 const root = path.resolve(__dirname, "../../..");
 

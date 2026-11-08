@@ -3,8 +3,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { loadDotEnv, parseDotEnv } from "../src/env-loader";
-import { loadConfig } from "../src/config";
+import { loadDotEnv, parseDotEnv } from "../src/config/env-loader";
+import { loadConfig } from "../src/config/config";
 
 test("parseDotEnv reads simple quoted and unquoted values", () => {
   assert.deepEqual(

@@ -8,7 +8,7 @@ import {
   getRecipePage,
   hasCacheEntry,
   writeCacheEntry,
-} from "../src/cache";
+} from "../src/ingestion/cache";
 
 function tmpCacheDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-cache-"));

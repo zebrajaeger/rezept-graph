@@ -1,4 +1,4 @@
-import { CliError } from "./errors";
+import { CliError } from "../errors";
 import type { RecipeAnalysis } from "./recipe-types";
 
 const NODE_TYPES = new Set(["ingredient", "process", "intermediate"]);

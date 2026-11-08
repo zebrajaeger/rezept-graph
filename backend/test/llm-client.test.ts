@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createLlmClient, createOllamaClient, createOpenAiCompatibleClient } from "../src/llm-client";
+import { createLlmClient, createOllamaClient, createOpenAiCompatibleClient } from "../src/llm/llm-client";
 
 test("createOpenAiCompatibleClient calls chat completions endpoint", async () => {
   let request: { url: string; options?: RequestInit } | undefined;

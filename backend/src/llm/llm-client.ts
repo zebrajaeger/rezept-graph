@@ -1,7 +1,7 @@
-import { CliError } from "./errors";
-import { isRecord, errorMessage, isAbortError } from "./unknown-data";
-import type { LlmConfig } from "./config";
-import type { JsonFetcher } from "./http-types";
+import { CliError } from "../errors";
+import { isRecord, errorMessage, isAbortError } from "../unknown-data";
+import type { LlmConfig } from "../config/config";
+import type { JsonFetcher } from "../http-types";
 
 export interface CompletionMessage { role: "system" | "user" | "assistant"; content: string }
 export interface CompletionClient { complete(messages: CompletionMessage[]): Promise<string> }

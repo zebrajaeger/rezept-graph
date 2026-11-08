@@ -1,13 +1,12 @@
-import { appendUniqueUrls } from "./url-file";
-import { CliError } from "./errors";
-import type { PageFetcher } from "./http-types";
+import { CliError } from "../errors";
+import type { PageFetcher } from "../http-types";
 
 const CHEFKOCH_RANDOM_URL = "https://www.chefkoch.de/rs/s0/zufall/Rezepte.html";
 const MIN_RATING = 4;
 const MIN_RATING_COUNT = 10;
 
-export async function seedChefkochUrls({ urlsPath, limit, fetcher = fetch }: {
-  urlsPath: string; limit: number; fetcher?: PageFetcher;
+export async function discoverChefkochUrls({ limit, fetcher = fetch }: {
+  limit: number; fetcher?: PageFetcher;
 }) {
   const response = await fetcher(CHEFKOCH_RANDOM_URL, {
     headers: {
@@ -27,10 +26,8 @@ export async function seedChefkochUrls({ urlsPath, limit, fetcher = fetch }: {
     .slice(0, limit)
     .map((recipe) => recipe.url);
 
-  const result = appendUniqueUrls(urlsPath, accepted);
   return {
-    ...result,
-    discovered: accepted.length,
+    urls: accepted,
     sourceUrl: CHEFKOCH_RANDOM_URL,
   };
 }

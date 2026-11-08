@@ -4,15 +4,15 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
-import { parseArgs, printHelp } from "../src/args";
-import { loadConfig } from "../src/config";
+import { parseArgs, printHelp } from "../src/cli/args";
+import { loadConfig } from "../src/config/config";
 
 const root = path.resolve(__dirname, "../../..");
 
 test("default config is the same from root and backend working directories", () => {
   for (const cwd of [root, path.join(root, "backend")]) {
     const result = spawnSync(process.execPath, ["-e",
-      `console.log(require(${JSON.stringify(path.join(root, "backend/dist/args.js"))}).parseArgs(['analyze']).configPath)`],
+      `console.log(require(${JSON.stringify(path.join(root, "backend/dist/cli/args.js"))}).parseArgs(['analyze']).configPath)`],
     { cwd, encoding: "utf8" });
     assert.equal(result.status, 0, result.stderr);
     assert.equal(result.stdout.trim(), path.join(root, "config.json"));
@@ -35,14 +35,14 @@ test("explicit config paths retain caller-relative and absolute semantics", (t) 
 test("missing default config does not select a legacy config or example", (t) => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "config-missing-"));
   t.after(() => fs.rmSync(tmp, { recursive: true, force: true }));
-  fs.mkdirSync(path.join(tmp, "backend/dist"), { recursive: true });
-  for (const name of ["args.js", "errors.js", "config.js", "unknown-data.js"]) {
+  fs.mkdirSync(path.join(tmp, "backend/dist/cli"), { recursive: true });
+  for (const name of ["cli/args.js", "errors.js"]) {
     fs.copyFileSync(path.join(root, "backend/dist", name), path.join(tmp, "backend/dist", name));
   }
   for (const target of ["backend/config.json", "config.example.json"]) {
     fs.copyFileSync(path.join(root, "config.example.json"), path.join(tmp, target));
   }
-  const result = spawnSync(process.execPath, ["-e", `console.log(require(${JSON.stringify(path.join(tmp, "backend/dist/args.js"))}).parseArgs(['analyze']).configPath)`], { encoding: "utf8" });
+  const result = spawnSync(process.execPath, ["-e", `console.log(require(${JSON.stringify(path.join(tmp, "backend/dist/cli/args.js"))}).parseArgs(['analyze']).configPath)`], { encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   const selected = result.stdout.trim();
   assert.equal(selected, path.join(tmp, "config.json"));

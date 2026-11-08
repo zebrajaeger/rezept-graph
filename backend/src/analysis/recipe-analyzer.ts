@@ -1,48 +1,20 @@
-import { CliError } from "./errors";
-import { createLlmClient, type CompletionClient, type CompletionMessage } from "./llm-client";
-import { getOrCreateLlmResponse } from "./llm-response-cache";
-import { validateRecipeAnalysis } from "./recipe-schema";
-import { errorMessage } from "./unknown-data";
-import type { LlmConfig } from "./config";
-import type { ExtractedContent } from "./extractor";
+import { CliError } from "../errors";
+import type { CompletionClient, CompletionMessage } from "../llm/llm-client";
+import { validateRecipeAnalysis } from "../recipe/recipe-schema";
+import { errorMessage } from "../unknown-data";
+import type { ExtractedContent } from "../ingestion/extractor";
 
 type AnalysisContent = Partial<Omit<ExtractedContent, "structuredRecipe">> & {
   structuredRecipe?: Partial<NonNullable<ExtractedContent["structuredRecipe"]>> | null;
 };
 
-export async function analyzeRecipeContent({ content, llmConfig, client }: {
-  content: AnalysisContent; llmConfig: LlmConfig; client?: CompletionClient;
+export async function analyzeRecipeContent({ content, client }: {
+  content: AnalysisContent; client: CompletionClient;
 }) {
-  const activeClient = client || createLlmClient(llmConfig);
   const messages = createAnalysisMessages(content);
-  const rawResponse = await completeWithOptionalCache({
-    messages,
-    llmConfig,
-    client: activeClient,
-  });
+  const rawResponse = await client.complete(messages);
   const parsed = parseJsonResponse(rawResponse);
   return validateRecipeAnalysis(parsed);
-}
-
-export async function completeWithOptionalCache({ messages, llmConfig, client }: {
-  messages: CompletionMessage[]; llmConfig?: LlmConfig; client: CompletionClient;
-}) {
-  if (!llmConfig?.responseCacheDir) {
-    return client.complete(messages);
-  }
-
-  const cached = await getOrCreateLlmResponse({
-    cacheDir: llmConfig.responseCacheDir,
-    cacheKeyParts: {
-      provider: llmConfig.provider || "openai",
-      baseUrl: llmConfig.baseUrl,
-      model: llmConfig.model,
-      messages,
-    },
-    createResponse: () => client.complete(messages),
-  });
-
-  return cached.content;
 }
 
 export function createAnalysisMessages(content: AnalysisContent): CompletionMessage[] {

@@ -19,7 +19,7 @@ npm test
 Deutsch: `npm start -- ...` baut vor jedem Start automatisch neu. Für den direkten
 Aufruf `node backend/src/cli.js ...` vom Hauptverzeichnis muss zuerst einmal
 `npm --prefix backend run build` ausgeführt werden. Die kleine JavaScript-Datei
-ist nur ein Kompatibilitätsadapter; die Anwendung liegt in `backend/src/*.ts`.
+ist nur ein Kompatibilitätsadapter; die Anwendung liegt in `backend/src/**/*.ts`.
 `backend/dist/` enthält ausschließlich kompilierte Anwendungsmodule,
 `backend/.test-dist/` die kompilierten Tests und deren Anwendungsmodule.
 Beide Ausgabeordner werden vor ihrem jeweiligen Build geleert und nicht versioniert.
@@ -27,14 +27,14 @@ Beide Ausgabeordner werden vor ihrem jeweiligen Build geleert und nicht versioni
 English: `npm start -- ...` rebuilds automatically before each invocation. Before
 using the direct `node backend/src/cli.js ...` command from the project root, run
 `npm --prefix backend run build`. That small JavaScript file is only a compatibility
-adapter; application code lives in `backend/src/*.ts`. `backend/dist/` contains
+adapter; application code lives in `backend/src/**/*.ts`. `backend/dist/` contains
 compiled application modules only; `backend/.test-dist/` contains compiled tests
 and their application modules. Each build cleans only its own output directory;
 neither directory is committed. No TypeScript runtime loader is required.
 
 ```mermaid
 flowchart LR
-  S["src/*.ts"] --> C["TypeScript compiler / Compiler"]
+  S["src/**/*.ts"] --> C["TypeScript compiler / Compiler"]
   C --> D["dist/*.js · CommonJS"]
   D --> N["Node.js CLI"]
   T["test/*.ts + type-tests/*.ts"] --> Q["Strict typecheck / Strikte Typprüfung"]
@@ -71,6 +71,14 @@ cp config.example.json config.json
 ```
 
 PowerShell: `Copy-Item config.example.json config.json` (nur wenn das Ziel fehlt / only if the destination is absent).
+
+### Backend architecture / Backend-Architektur
+
+English: See [backend responsibilities and data flow](docs/backend-architecture.md)
+for module boundaries, independent presentation preparation and stable entry paths.
+
+Deutsch: [Backend-Verantwortlichkeiten und Datenfluss](docs/backend-architecture.md)
+beschreibt Modulgrenzen, unabhängige Ansichtsaufbereitung und stabile Startpfade.
 
 ### Backend CLI
 

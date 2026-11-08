@@ -1,6 +1,6 @@
-import type { RecipeNode } from "../src/recipe-types";
-import type { LlmConfig } from "../src/config";
-import type { CompletionClient } from "../src/llm-client";
+import type { RecipeNode } from "../src/recipe/recipe-types";
+import type { LlmConfig } from "../src/config/config";
+import type { CompletionClient } from "../src/llm/llm-client";
 import type { PageFetcher } from "../src/http-types";
 
 // @ts-expect-error Unknown node categories must not enter validated graphs.

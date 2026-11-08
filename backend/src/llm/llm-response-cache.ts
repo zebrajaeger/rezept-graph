@@ -1,8 +1,8 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { isRecord } from "./unknown-data";
-import { CliError } from "./errors";
+import { isRecord } from "../unknown-data";
+import { CliError } from "../errors";
 
 export function createLlmCacheKey(parts: unknown) {
   return crypto.createHash("sha256").update(stableStringify(parts)).digest("hex").slice(0, 32);

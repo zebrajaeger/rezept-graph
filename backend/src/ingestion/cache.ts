@@ -1,8 +1,8 @@
-import crypto from "node:crypto";
+import { hashSourceIdentity } from "../source-identity";
 import fs from "node:fs";
 import path from "node:path";
-import { CliError } from "./errors";
-import type { CacheMode } from "./config";
+import { CliError } from "../errors";
+import type { CacheMode } from "../config/config";
 
 export interface PageEntry {
   url: string; html: string; finalUrl?: string; fetchedAt: string;
@@ -10,7 +10,7 @@ export interface PageEntry {
 }
 
 export function createCacheKey(url: string) {
-  return crypto.createHash("sha256").update(url).digest("hex").slice(0, 24);
+  return hashSourceIdentity(url);
 }
 
 export function getCachePaths(cacheDir: string, url: string) {
