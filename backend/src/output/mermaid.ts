@@ -27,10 +27,14 @@ function styleLines() {
 
 function renderNode(node: PresentationNode) {
   const id = safeId(node.id);
-  const label = escapeLabel(formatNodeLabel(node));
+  let label = escapeLabel(formatNodeLabel(node));
   if (node.icon && node.type !== "intermediate" && /^data:image\/png;base64,[A-Za-z0-9+/]+=*$/.test(node.icon.dataUri)) {
-    const safeLabel = label.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/[\r\n]/g, " ").replace(/\\n/g, " ");
-    return `${id}@{ img: "${node.icon.dataUri}", label: "${safeLabel}", pos: "b", w: 48, h: ${Math.max(1, Math.round(48 * node.icon.height / node.icon.width))}, constraint: "on" }`;
+    // Reserve native SVG label space; the renderer embeds the image after layout.
+    const prefix = `%% inline-icon ${id} ${node.icon.width} ${node.icon.height} ${node.icon.dataUri}\n  `;
+    label = `ICONSPACE ${label}\\nICONHEIGHT\\nICONHEIGHT`;
+    if (node.type === "ingredient") return `${prefix}${id}(["${label}"])`;
+    if (node.cues.passive) return `${prefix}${id}{{"${label}"}}`;
+    return `${prefix}${id}["${label}"]`;
   }
   if (node.type === "ingredient") {
     return `${id}(["${label}"])`;

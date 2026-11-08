@@ -4,7 +4,8 @@ import { extractRecipeContent } from "../ingestion/extractor";
 import { analyzeRecipeContent } from "../analysis/recipe-analyzer";
 import { writeRecipeOutputs } from "../output/output-writer";
 import type { Config } from "../config/config";
-import type { CompletionClient } from "../llm/llm-client";
+import { createLlmClient, type CompletionClient } from "../llm/llm-client";
+import { IngredientInterpreter } from "../icons/ingredient-semantics";
 import type { PageFetcher } from "../http-types";
 import { enrichPlanning } from "../planning/enrich-planning";
 import { scheduleCooking } from "../planning/schedule-cooking";
@@ -32,6 +33,10 @@ export async function analyzeUrls({ urls, config, client, fetcher = fetch, onPro
 }, deps: Partial<AnalysisDependencies> = {}) {
   const active = { getRecipePage, extractRecipeContent, analyzeRecipeContent, writeRecipeOutputs, enrichPlanning, writeTimelineOutputs, clearTimelineImages, createIconLibrary: (icons: NonNullable<Config["icons"]>, warn: (message: string) => void) => new IconLibrary(icons, { generator: icons.mode === "generate-missing" && icons.generator ? new CodexGenerator(icons.generator) : undefined, warn }), ...deps };
   const library = config.icons && config.icons.mode !== "off" ? active.createIconLibrary(config.icons, onWarning) : undefined;
+  const interpretation = config.icons?.interpretation;
+  const interpreter = library && (interpretation || config.icons?.presentation)
+    ? new IngredientInterpreter(config.icons!.mode, interpretation, interpretation && config.icons!.mode === "generate-missing" ? createLlmClient({ ...interpretation, maxResponseBytes: interpretation.maxOutputBytes + 4096 }) : undefined)
+    : undefined;
   const results: AnalysisResult[] = [];
   for (const url of urls) {
     const page = await active.getRecipePage({
@@ -42,7 +47,7 @@ export async function analyzeUrls({ urls, config, client, fetcher = fetch, onPro
     const analysis = await active.analyzeRecipeContent({ content, client });
     let icons: Awaited<ReturnType<typeof acquirePresentationIcons>> | undefined;
     if (library) {
-      try { icons = await acquirePresentationIcons(analysis, library, config.output.includeIntermediateStates, onWarning, config.icons?.displayCacheDirectory); }
+      try { icons = await acquirePresentationIcons(analysis, library, config.output.includeIntermediateStates, onWarning, config.icons?.displayCacheDirectory, { interpreter, presentation: config.icons?.presentation }); }
       catch { onWarning("Icon acquisition failed; rendering text-only graph."); }
       await library.report();
     }

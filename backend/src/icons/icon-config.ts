@@ -1,7 +1,8 @@
 import path from "node:path";
+import { normalizeInterpretation, type InterpretationConfig } from "./interpretation-config";
 
 export interface GeneratorConfig { backend: "codex-cli"; executable: string; termsReference: string; profile?: string; agentModel?: string; timeoutMs: number; maxOutputBytes: number }
-export interface IconConfig { mode: "off" | "local-only" | "generate-missing"; libraryDirectory: string; displayCacheDirectory: string; reportPath: string; generator?: GeneratorConfig }
+export interface IconConfig { mode: "off" | "local-only" | "generate-missing"; libraryDirectory: string; displayCacheDirectory: string; reportPath: string; generator?: GeneratorConfig; interpretation?: InterpretationConfig; presentation?: boolean }
 
 export function normalizeIcons(value: unknown, base: string): IconConfig {
   const fail = (): never => { throw new Error("Invalid icons configuration; check mode, paths and bounded codex-cli settings."); };
@@ -10,6 +11,8 @@ export function normalizeIcons(value: unknown, base: string): IconConfig {
   if (value === undefined) return { mode: "off", libraryDirectory: path.resolve(base, "assets/recipe-icons"), displayCacheDirectory: path.resolve(base, "backend/.cache/recipe-icons"), reportPath: path.resolve(base, "backend/outputs/icon-demand.json") };
   if (!record(value) || !["off", "local-only", "generate-missing"].includes(String(value.mode))) fail();
   const v = value as Record<string, unknown>;
+  if (v.presentation !== undefined && typeof v.presentation !== "boolean") fail();
+  const interpretation = normalizeInterpretation(v.interpretation, base);
   for (const key of ["libraryDirectory", "reportPath", "displayCacheDirectory"]) if (v[key] !== undefined && !text(v[key])) fail();
   let generator: GeneratorConfig | undefined;
   if (v.generator !== undefined) {
@@ -35,5 +38,6 @@ export function normalizeIcons(value: unknown, base: string): IconConfig {
   const displayCacheDirectory = path.resolve(base, String(v.displayCacheDirectory || "backend/.cache/recipe-icons"));
   const within = (parent: string, child: string) => { const relative = path.relative(parent, child); return relative === "" || (!relative.startsWith(`..${path.sep}`) && relative !== ".." && !path.isAbsolute(relative)); };
   if (within(libraryDirectory, displayCacheDirectory) || within(displayCacheDirectory, libraryDirectory) || within(displayCacheDirectory, reportPath)) fail();
-  return { mode: v.mode as IconConfig["mode"], libraryDirectory, displayCacheDirectory, reportPath, generator };
+  if (interpretation && (within(libraryDirectory, interpretation.cacheDirectory) || within(interpretation.cacheDirectory, libraryDirectory) || within(displayCacheDirectory, interpretation.cacheDirectory) || within(interpretation.cacheDirectory, displayCacheDirectory) || within(interpretation.cacheDirectory, reportPath))) fail();
+  return { mode: v.mode as IconConfig["mode"], libraryDirectory, displayCacheDirectory, reportPath, generator, ...(interpretation ? { interpretation } : {}), ...(v.presentation !== undefined ? { presentation: v.presentation as boolean } : {}) };
 }

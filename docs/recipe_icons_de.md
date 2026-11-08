@@ -1,6 +1,14 @@
 # Rezept-Icons
 
+## Zustände von Eiern
+
+Bei aktivierter neuer Interpretation/Darstellung tragen Eier einen validierten Zustand `raw`, `boiled` oder `fried`. Einfache Eierangaben gelten als rohe ganze Eier mit intakter Schale; explizit gekochte oder gebratene Eier bleiben getrennt. Unterstützte Beispiele: `3 Eier, Größe M`, `2 rohe Eier`, `2 gekochte Eier`, `hart gekochtes Ei`, `Spiegelei`, `2 gebratene Eier`, `boiled egg`, `fried egg`. Widersprüchliche Zustände, aufgeschlagene Eier, Rührei, pochierte Eier, Eiweiß und Eigelb bleiben vorerst Text statt falscher Ganz-Ei-Zuordnung.
+
+Neue Bildschlüssel: `ingredients/egg-raw`, `ingredients/egg-boiled`, `ingredients/egg-fried`; Gruppen entsprechend `egg-raw-count-3` usw. Grund- und Gruppenprompts nennen Zustand und Form ausdrücklich. Badges und Gruppenfallback verwenden ausschließlich denselben Zustand. Derivat- und Interpretationscache sind dafür versioniert. Die alten zustandsunspezifischen Pakete `egg` und `egg-count-3` bleiben erhalten, werden aber nicht automatisch als neue Zustandsbilder übernommen. Fehlende neue Bilder bleiben in local-only Text; es wurden keine zusätzlichen Zustandsbilder generiert. Ohne aktivierte neue Funktionen bleibt der alte Resolver aus Kompatibilitätsgründen unverändert.
+
 ## Originale, Derivate und Bedarf
+
+Icons ergänzen vorhandene Knoten statt deren Form zu ersetzen: bei Zutaten bleibt die grüne pillenförmige Umrandung erhalten, das Bild steht innen links und der vollständige Text rechts. Der Anwendungsrenderer reserviert Platz im Mermaid-Layout und setzt native SVG-Bilder/Text ein; PNG wird aus derselben vervollständigten SVG erzeugt. Die `.mmd` enthält dafür `inline-icon`-Kommentare und Platzhalter und muss mit dem Anwendungsrenderer verarbeitet werden; ein fremder Mermaid-Viewer zeigt nur die Platzhalter. Reine Textgraphen behalten die bisherige Ausgabe.
 
 Original-PNGs **gemeinsam mit Metadaten** unter `assets/recipe-icons/` versionieren. Kleine Anzeigebilder sind entbehrlich: `icons.displayCacheDirectory` ist standardmäßig `backend/.cache/recipe-icons`, relativ zur Config. Cache und Originalbibliothek dürfen sich nicht überlappen. Schlüssel enthalten Original-SHA-256, Regelversion, Puppeteer-Version sowie Plattform/Architektur (mitgelieferten Browser verwenden; bei eigener Browserüberschreibung Cache löschen). Unveränderte Eingaben verwenden geprüfte PNGs über Knoten und Läufe hinweg wieder. Geänderte Originale/Regeln erhalten neue Schlüssel; gelöschte/defekte Einträge werden offline ohne KI neu erzeugt. Schreibfehler erlauben weiter die Anzeige aus dem Arbeitsspeicher. Alte Schlüssel werden nicht automatisch bereinigt; diesen Cache darfst du löschen.
 
@@ -60,6 +68,34 @@ PNG und Metadaten gemeinsam committen, wenn das Aussehen erhalten bleiben soll. 
 Temporäre Veröffentlichung auf demselben Dateisystem, Bild zuerst und Metadaten zuletzt. Unterbrochene Pakete gelten als fehlend; nur eigene Staging-Dateien bereinigen, fremde Dateien erhalten. Keine mehreren Katalogschreiber.
 
 ## Motive und Fehler
+
+### Optionale semantische Erkennung und Mengenvarianten
+
+Beide Neuerungen sind standardmäßig deaktiviert. Unter `icons` optional ergänzen (Beispielwerte anpassen):
+
+```json
+"presentation": true,
+"interpretation": {
+  "enabled": true,
+  "baseUrl": "http://localhost:1234/v1",
+  "model": "your-small-model",
+  "apiKeyEnv": "ICON_LLM_API_KEY",
+  "timeoutMs": 10000,
+  "maxOutputBytes": 4096,
+  "cacheDirectory": "backend/.cache/ingredient-interpretation"
+}
+```
+
+`presentation` aktiviert Mengen-/Alternativdarstellung. `interpretation` aktiviert unabhängig davon die Ergänzung ungelöster Formulierungen durch ein separat konfiguriertes OpenAI-kompatibles Modell; kein automatischer Rückgriff auf das Analysemodell. Ohne Interpretation gelten die bisherigen Regeln. Ohne presentation kann eine erkannte Einzelzutat ihr Grundmotiv erhalten; Alternativen bleiben Text.
+
+- Regeln zuerst; nur ungelöste Formulierungen gehen an das Modell. Kuratierte Identitäten: Ei, Apfel, Butter, Margarine, Zucker, Mehl, Salz. Unbekanntes, Mischungen, Verneinungen und ungültige Antworten bleiben Text. Keine allgemeine Zutatenontologie und keine Garantie korrekter Modellinterpretation.
+- Zutaten-/Knoten-IDs sind nicht verknüpft. Ausschließlich Knotentext verwenden, keine Menge aus geratenen Zuordnungen übernehmen. Rezeptdaten und Beschriftungen bleiben unverändert.
+- off: keine Interpretation. local-only: Regeln und bei Aktivierung vorhandene validierte Interpretationen, **keine semantischen Netzaufrufe**. Nur generate-missing kann bei expliziter Interpretation neue Modellanfragen stellen.
+- Eine Anfrage je unterschiedlicher Eingabe/Lauf, auch Fehler werden im Lauf nicht wiederholt. Zeitlimit 1–60000 ms, Inhaltslimit 1–65536 Byte; HTTP-Antwortlimit zusätzlich 4096 Byte für Protokollhülle. Cacheversion umfasst Prompt/Schema, Originaleingabe, Endpoint, Modell und Namen der Schlüsselvariable, niemals deren Geheimnis. Cache extern zur Bildbibliothek; Standardcache Git-ignoriert und löschbar.
+- Ein Ei nutzt das Grundmotiv; zwei bis fünf Eier erlauben ausschließlich angefragte Gruppenbilder `egg-count-2` bis `egg-count-5`. Darüber Grundmotiv plus lokal gesetzte genaue Zahl. Fehlt eine Gruppenvariante, Grundmotiv plus Zahl; fehlt auch dieses, Text. Keine unangefragten Varianten. Gewichte, Brüche und fehlende Stückzahlen bleiben im Text, ohne erfundene Zählung.
+- Butter/Margarine-Alternative wird bei validierter Interpretation lokal mit „oder“ zusammengesetzt; kein neues KI-Alternativbild. Fehlt eine Komponente, vollständiger Text statt einer irreführenden Einzelauswahl. Badges/Kompositionen sind löschbare Derivate mit versions-, mengen- und komponentenabhängigen Cacheidentitäten.
+
+Fehler bleiben nichtfatal; bestehende Generatorgrenzen und Darstellungsbudgets gelten weiter. Neues Verhalten ist in der lokalen Config **nicht automatisch aktiviert**. Modellqualität und visuelle Nutzbarkeit sind noch offen: [Offline-Versuch und separate Live-Freigabe](ingredient_icon_trial_de.md).
 
 ### Unterstützte reale Beschriftungen
 

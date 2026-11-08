@@ -1,5 +1,41 @@
 # Recipe icons
 
+## Egg states
+
+With the new interpretation/presentation enabled, eggs carry a validated `raw`, `boiled` or `fried` state. Plain eggs default to whole raw eggs with intact shells; explicit boiled/fried eggs remain separate. Supported examples include `3 Eier, Größe M`, `2 rohe Eier`, `2 gekochte Eier`, `hart gekochtes Ei`, `Spiegelei`, `2 gebratene Eier`, `boiled egg` and `fried egg`. Conflicting states, cracked eggs, scrambled/poached eggs, whites and yolks currently retain text rather than incorrectly selecting a whole egg.
+
+New keys: `ingredients/egg-raw`, `ingredients/egg-boiled`, `ingredients/egg-fried`, with matching groups such as `egg-raw-count-3`. Base/group prompts explicitly specify state and depicted form. Badges and group fallback use only the matching state. Interpretation/derivative cache versions include this change. Legacy unspecified `egg` and `egg-count-3` bundles remain preserved but never automatically become state-specific assets. Missing new bundles retain text in local-only; no additional state images were generated. With new features disabled the legacy resolver remains unchanged for compatibility.
+
+Icons supplement existing node containers rather than replace them: ingredient nodes retain their green stadium outline with the icon inside on the left and full text on the right. The application renderer reserves Mermaid layout space, inserts native SVG images/text, and rasterizes that completed SVG to PNG. The `.mmd` contains `inline-icon` comments and placeholders and requires the application renderer; an unrelated Mermaid viewer displays the placeholders only. Text-only graphs preserve their previous output.
+
+## Optional semantic interpretation and quantity variants
+
+Both features default off. Optional fields under `icons` (adjust example values):
+
+```json
+"presentation": true,
+"interpretation": {
+  "enabled": true,
+  "baseUrl": "http://localhost:1234/v1",
+  "model": "your-small-model",
+  "apiKeyEnv": "ICON_LLM_API_KEY",
+  "timeoutMs": 10000,
+  "maxOutputBytes": 4096,
+  "cacheDirectory": "backend/.cache/ingredient-interpretation"
+}
+```
+
+`presentation` enables quantity/alternative layouts. Independently, `interpretation` enables a separately configured OpenAI-compatible model for unresolved phrases; it never silently borrows the analysis model. Without interpretation, existing recognition remains. Without presentation, interpreted single ingredients can use base motifs, but alternatives remain text.
+
+- Deterministic recognition first. Curated identities: egg, apple, butter, margarine, sugar, flour, salt. Unknowns, mixtures, negations and malformed responses retain text. This is not a general food ontology or a guarantee of correct model interpretation.
+- Ingredient/node IDs have no explicit linkage: only node labels supply evidence; no guessed associations borrow quantities. Source facts and labels stay unchanged.
+- off bypasses interpretation. local-only uses rules and, when enabled, validated cached interpretations, **never new semantic network calls**. Only generate-missing can issue new explicitly enabled interpretation requests.
+- At most one request per distinct input per run, including failures; no automatic retries. Timeout: 1–60000 ms; content limit: 1–65536 bytes, with 4096 additional transport bytes for the protocol envelope. Cache identity includes schema/prompt version, original input, endpoint, model and credential variable name, never its secret. Keep the cache outside originals; its default location is Git-ignored and disposable.
+- One egg reuses the base. Two through five permit only requested `egg-count-2` through `egg-count-5` group variants. Larger counts use the base with a locally drawn exact number. Missing groups fall back to base plus number, then text. No speculative variants. Weights, fractions and missing counts remain textual without invented counts.
+- Validated butter/margarine alternatives compose individual motifs locally with “oder”, without a generated alternative asset. A missing component retains complete text instead of showing one misleading choice. Badges/compositions are disposable derivatives keyed by versions, counts and component checksums.
+
+Failures remain nonfatal; existing generator limits and display budgets still apply. Local configuration has **not been automatically enabled**. Model quality and visual usability remain pending: [offline trial and separate live authorization](ingredient_icon_trial_en.md).
+
 ## Originals, derivatives and demand
 
 Commit original PNGs **together with metadata** under `assets/recipe-icons/`. Small display PNGs are disposable: `icons.displayCacheDirectory` defaults to `backend/.cache/recipe-icons` relative to the config file. Cache and library directories must not overlap. Cache keys combine original SHA-256, resize-rule version, Puppeteer package version and platform/architecture (use the bundled browser; custom browser overrides require clearing the cache). Unchanged inputs reuse validated PNGs across nodes and runs. Changed originals/rules use new keys; deleted/corrupt cache entries rebuild offline with no AI request. Write failures still allow use of the in-memory derivative. Old keys are not automatically removed; deleting this cache is safe.

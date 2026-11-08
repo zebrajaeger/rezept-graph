@@ -41,7 +41,7 @@ test("realistic apple-cake fixture acquires shared motifs and renders portable v
   for (const key of ["jsonPath", "ingredientsPath"] as const) assert.deepEqual(fs.readFileSync(output[key]), fs.readFileSync(baseline[key]));
   assert.equal(JSON.stringify(appleCakeIcons), before);
   const source = fs.readFileSync(output.mermaidPath, "utf8");
-  assert.equal((source.match(/img:/g) || []).length, 8);
+  assert.equal((source.match(/%% inline-icon/g) || []).length, 8);
   for (const text of ["3 Eier, Größe M", "250 g Mehl", "200 °C", "45 Minuten", "class p9 processHot;", "i4 -->|used_in| p9"]) assert.ok(source.includes(text), text);
   for (const id of ["i1", "i2", "i5", "i9", "p1", "s1"]) assert.doesNotMatch(source, new RegExp(`${id}@\\{ img:`));
   const moved = path.join(root, "moved"); fs.mkdirSync(moved);

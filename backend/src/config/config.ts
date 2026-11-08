@@ -13,6 +13,7 @@ export interface LlmConfig {
   apiKeyEnv: string;
   timeoutMs?: number;
   responseCacheDir?: string;
+  maxResponseBytes?: number;
 }
 export interface RawConfig {
   llm: Omit<LlmConfig, "baseUrl"> & { baseUrl?: string; timeoutMs: number };

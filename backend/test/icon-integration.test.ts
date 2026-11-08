@@ -30,7 +30,7 @@ test("writer enriches a pure presentation, preserves facts/cues/edges and falls 
   const dataUri = "data:image/png;base64,iVBORw0KGgo=";
   const result = await writeRecipeOutputs(analysis, root, { icons: new Map([["egg", { dataUri, width: 1, height: 1 }]]) }, { renderImages });
   const source = fs.readFileSync(result.mermaidPath, "utf8");
-  assert.match(source, /img:/); assert.match(source, /Eier/); assert.match(source, /180 C/); assert.match(source, /processHot/); assert.match(source, /egg -->/);
+  assert.match(source, /%% inline-icon/); assert.match(source, /Eier/); assert.match(source, /180 C/); assert.match(source, /processHot/); assert.match(source, /egg -->/);
   assert.equal(JSON.stringify(analysis), original); assert.doesNotMatch(fs.readFileSync(result.jsonPath, "utf8"), /data:image|icons/);
   const baseline = await writeRecipeOutputs(analysis, root, {}, { renderImages }); assert.doesNotMatch(fs.readFileSync(baseline.mermaidPath, "utf8"), /img:/);
 });
@@ -46,7 +46,7 @@ test("workflow generation failure is nonfatal but rendering failure after icons 
   assert.equal(progress, 1);
   const original = result[0]!.outputs;
   for (const file of [original.jsonPath, original.ingredientsPath, original.mermaidPath, original.svgPath, original.pngPath]) assert.ok(fs.statSync(file).size);
-  await assert.rejects(analyzeUrls({ urls: ["recipe"], config, client: { complete: async () => "{}" }, onProgress: () => progress++ }, { ...common, createIconLibrary: configuration => new IconLibrary(configuration, { generator: { generate: async request => { fs.writeFileSync(request.stagingPngPath, png); return { available: true, stagingPngPath: request.stagingPngPath, identity: { backend: "fixture", cliVersion: "1", reportedImageModel: null } }; } } }), writeRecipeOutputs: (analysis, directory, options) => writeRecipeOutputs(analysis, directory, options, { renderImages: async ({ mermaidPath }) => { assert.match(fs.readFileSync(mermaidPath, "utf8"), /img:/); throw Error("renderer fixture failed"); } }) }), /renderer fixture failed/);
+  await assert.rejects(analyzeUrls({ urls: ["recipe"], config, client: { complete: async () => "{}" }, onProgress: () => progress++ }, { ...common, createIconLibrary: configuration => new IconLibrary(configuration, { generator: { generate: async request => { fs.writeFileSync(request.stagingPngPath, png); return { available: true, stagingPngPath: request.stagingPngPath, identity: { backend: "fixture", cliVersion: "1", reportedImageModel: null } }; } } }), writeRecipeOutputs: (analysis, directory, options) => writeRecipeOutputs(analysis, directory, options, { renderImages: async ({ mermaidPath }) => { assert.match(fs.readFileSync(mermaidPath, "utf8"), /%% inline-icon/); throw Error("renderer fixture failed"); } }) }), /renderer fixture failed/);
   assert.equal(progress, 1);
   assert.equal(fs.existsSync(original.svgPath), false); assert.equal(fs.existsSync(original.pngPath), false);
 });

@@ -2,6 +2,7 @@ import { execFile } from "node:child_process";
 import path from "node:path";
 import fs from "node:fs";
 import { CliError } from "../errors";
+import { embedInlineIcons } from "./inline-icons";
 
 export interface GraphImagePaths { mermaidPath: string; svgPath: string; pngPath: string }
 
@@ -41,7 +42,9 @@ export async function renderGraphImages(paths: GraphImagePaths, deps: { run?: ty
     throw new CliError("Mermaid renderer is missing. Install runtime dependencies; see docs/setup_en.md or docs/setup_de.md.");
   }
   const run = deps.run || runRenderer;
-  for (const outputPath of [paths.svgPath, paths.pngPath]) {
+  const inline = fs.existsSync(paths.mermaidPath) && fs.readFileSync(paths.mermaidPath, "utf8").includes("%% inline-icon ");
+  for (const outputPath of inline ? [paths.svgPath] : [paths.svgPath, paths.pngPath]) {
     await run(process.execPath, [executable, "--input", paths.mermaidPath, "--theme", "default", "--backgroundColor", "white", "--width", "1600", "--height", "900", "--scale", "1", "--output", outputPath]);
   }
+  if (inline) await embedInlineIcons(paths);
 }

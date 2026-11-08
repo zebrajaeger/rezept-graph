@@ -37,7 +37,21 @@ export function createOpenAiCompatibleClient(config: LlmConfig, options: ClientO
           throw new CliError(`LLM-Anfrage fehlgeschlagen: HTTP ${response.status}`);
         }
 
-        const payload: unknown = await response.json();
+        let payload: unknown;
+        if (config.maxResponseBytes !== undefined) {
+          if (!Number.isSafeInteger(config.maxResponseBytes) || config.maxResponseBytes < 1 || !("body" in response) || !response.body) throw new CliError("Invalid LLM response limit.");
+          const reader = response.body.getReader();
+          const chunks: Uint8Array[] = []; let length = 0;
+          try {
+            while (true) {
+              const chunk = await reader.read(); if (chunk.done) break;
+              length += chunk.value.length;
+              if (length > config.maxResponseBytes) { await reader.cancel(); throw new CliError("LLM response exceeds byte limit."); }
+              chunks.push(chunk.value);
+            }
+          } finally { reader.releaseLock(); }
+          payload = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+        } else payload = await response.json();
         const choice: unknown = isRecord(payload) && Array.isArray(payload.choices) ? payload.choices[0] : undefined;
         const content = isRecord(choice) && isRecord(choice.message) ? choice.message.content : undefined;
         if (typeof content !== "string" || content.trim().length === 0) {
