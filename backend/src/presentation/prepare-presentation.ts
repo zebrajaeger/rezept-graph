@@ -1,7 +1,8 @@
 import type { RecipeAnalysis, RecipeNode, RecipeEdge } from "../recipe/recipe-types";
 
-export interface RenderOptions { includeIntermediateStates?: boolean }
+export interface RenderOptions { includeIntermediateStates?: boolean; icons?: ReadonlyMap<string, { dataUri: string; width: number; height: number }> }
 export interface PresentationNode extends RecipeNode {
+  icon?: { dataUri: string; width: number; height: number };
   cues: { hot: boolean; coldPassive: boolean; passive: boolean };
 }
 export interface Presentation { nodes: PresentationNode[]; edges: RecipeEdge[] }

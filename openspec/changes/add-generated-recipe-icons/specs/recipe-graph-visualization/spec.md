@@ -26,6 +26,36 @@ The system SHALL render the same enriched Mermaid source into SVG and PNG with v
 - **WHEN** an icon is available but SVG or PNG graph rendering fails
 - **THEN** the existing actionable nonzero failure and cleanup of both final graph-image destinations still apply
 
+### Requirement: Embedded icons respect renderer resource limits
+The system SHALL keep original library images unchanged and produce bounded aspect-preserving PNG display derivatives for approximately 48-pixel illustration display. Derivatives SHALL be decoded and produced offline from bounded PNG inputs. The enriched Mermaid source SHALL stay within a documented total source budget without globally increasing Mermaid limits. If an icon cannot fit, its node SHALL retain full text without an icon. Selection SHALL be deterministic for fixed ordered inputs and derivative bytes.
+
+#### Scenario: Original image exceeds the source budget
+- **WHEN** a valid generated original is too large for direct embedding
+- **THEN** a small derivative is used while the original bytes remain unchanged
+
+#### Scenario: Multiple icons exhaust the total budget
+- **WHEN** additional icon data would exceed the total source budget
+- **THEN** remaining nodes keep text-only labels and the source remains within the budget
+
+#### Scenario: Renderer exits successfully with an error diagram
+- **WHEN** Mermaid returns exit code zero but produces a recognized error diagram, including the maximum-text-size card
+- **THEN** the output is rejected as a graph-rendering failure rather than published as a successful recipe image
+
+### Requirement: Display derivatives use a disposable local cache
+The system SHALL persist bounded validated display PNGs in a configurable cache directory (default `backend/.cache/recipe-icons`, relative to the configuration file). Keys SHALL include original SHA-256 and versioned resize rules/runtime identity. Unchanged inputs SHALL reuse the derivative across nodes and runs. Deleted or corrupt entries SHALL be rebuilt offline without AI calls. Cache write failures SHALL NOT prevent use of a locally produced derivative. Original bytes and metadata SHALL remain unchanged. Default cache and demand paths SHALL be Git-ignored, while original bundles SHALL remain eligible for versioning.
+
+#### Scenario: Cache is discarded
+- **WHEN** the local derivative cache is deleted but an original bundle remains
+- **THEN** the derivative is recreated locally without image generation
+
+#### Scenario: Original or rules change
+- **WHEN** original bytes or the resize-rule/runtime version change
+- **THEN** a different cache key is used instead of reusing the old derivative
+
+#### Scenario: Cache is unavailable
+- **WHEN** a cached PNG is corrupt or cache writes fail
+- **THEN** the system rebuilds locally and can use the validated result without changing original bundles
+
 ## MODIFIED Requirements
 
 ### Requirement: Output files are deterministic for cached inputs

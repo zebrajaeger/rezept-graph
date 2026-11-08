@@ -1,0 +1,15 @@
+{
+  "icons": {
+    "mode": "generate-missing",
+    "libraryDirectory": "../assets/recipe-icons",
+    "displayCacheDirectory": "../backend/.cache/recipe-icons",
+    "reportPath": "../backend/outputs/icon-demand.json",
+    "generator": {
+      "backend": "codex-cli",
+      "executable": "C:/replace-with-installed-native-codex/codex.exe",
+      "termsReference": "https://openai.com/policies/terms-of-use/",
+      "timeoutMs": 120000,
+      "maxOutputBytes": 262144
+    }
+  }
+}

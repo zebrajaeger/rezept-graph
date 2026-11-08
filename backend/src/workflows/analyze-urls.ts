@@ -9,6 +9,9 @@ import type { PageFetcher } from "../http-types";
 import { enrichPlanning } from "../planning/enrich-planning";
 import { scheduleCooking } from "../planning/schedule-cooking";
 import { clearTimelineImages, writeTimelineOutputs } from "../planning/timeline-output";
+import { IconLibrary } from "../icons/library";
+import { CodexGenerator } from "../icons/codex-generator";
+import { acquirePresentationIcons } from "../output/acquire-icons";
 
 interface AnalysisResult { url: string; outputs: Awaited<ReturnType<typeof writeRecipeOutputs>> & Awaited<ReturnType<typeof writeTimelineOutputs>> }
 interface AnalysisDependencies {
@@ -19,13 +22,16 @@ interface AnalysisDependencies {
   enrichPlanning: typeof enrichPlanning;
   writeTimelineOutputs: typeof writeTimelineOutputs;
   clearTimelineImages: typeof clearTimelineImages;
+  createIconLibrary: (config: NonNullable<Config["icons"]>, warn: (message: string) => void) => IconLibrary;
 }
 
-export async function analyzeUrls({ urls, config, client, fetcher = fetch, onProgress }: {
+export async function analyzeUrls({ urls, config, client, fetcher = fetch, onProgress, onWarning = () => {} }: {
   urls: string[]; config: Config; client: CompletionClient; fetcher?: PageFetcher;
   onProgress?: (result: AnalysisResult) => void;
+  onWarning?: (message: string) => void;
 }, deps: Partial<AnalysisDependencies> = {}) {
-  const active = { getRecipePage, extractRecipeContent, analyzeRecipeContent, writeRecipeOutputs, enrichPlanning, writeTimelineOutputs, clearTimelineImages, ...deps };
+  const active = { getRecipePage, extractRecipeContent, analyzeRecipeContent, writeRecipeOutputs, enrichPlanning, writeTimelineOutputs, clearTimelineImages, createIconLibrary: (icons: NonNullable<Config["icons"]>, warn: (message: string) => void) => new IconLibrary(icons, { generator: icons.mode === "generate-missing" && icons.generator ? new CodexGenerator(icons.generator) : undefined, warn }), ...deps };
+  const library = config.icons && config.icons.mode !== "off" ? active.createIconLibrary(config.icons, onWarning) : undefined;
   const results: AnalysisResult[] = [];
   for (const url of urls) {
     const page = await active.getRecipePage({
@@ -34,8 +40,15 @@ export async function analyzeUrls({ urls, config, client, fetcher = fetch, onPro
     });
     const content = active.extractRecipeContent(page.html, url);
     const analysis = await active.analyzeRecipeContent({ content, client });
+    let icons: Awaited<ReturnType<typeof acquirePresentationIcons>> | undefined;
+    if (library) {
+      try { icons = await acquirePresentationIcons(analysis, library, config.output.includeIntermediateStates, onWarning, config.icons?.displayCacheDirectory); }
+      catch { onWarning("Icon acquisition failed; rendering text-only graph."); }
+      await library.report();
+    }
     const outputs = await active.writeRecipeOutputs(analysis, config.output.directory, {
       includeIntermediateStates: config.output.includeIntermediateStates,
+      ...(icons ? { icons } : {}),
     });
     active.clearTimelineImages(outputs.mermaidPath);
     const planning = await active.enrichPlanning({ content, analysis, client });

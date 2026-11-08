@@ -3,6 +3,7 @@ import path from "node:path";
 import { CliError } from "../errors";
 import { isRecord } from "../unknown-data";
 import type { CliArgs } from "../cli/args";
+import { normalizeIcons, type IconConfig } from "../icons/icon-config";
 
 export type CacheMode = "cache-first" | "refresh" | "offline";
 export interface LlmConfig {
@@ -17,6 +18,7 @@ export interface RawConfig {
   llm: Omit<LlmConfig, "baseUrl"> & { baseUrl?: string; timeoutMs: number };
   cache: { directory: string; mode: CacheMode };
   output: { directory: string; includeIntermediateStates: boolean };
+  icons?: IconConfig;
 }
 export interface Config extends Omit<RawConfig, "llm"> { llm: LlmConfig }
 
@@ -68,6 +70,7 @@ export function validateConfig(config: unknown, sourcePath: string): asserts con
   const llm = isRecord(config.llm) ? config.llm : {};
   const cache = isRecord(config.cache) ? config.cache : {};
   const output = isRecord(config.output) ? config.output : {};
+  normalizeIcons(config.icons, path.dirname(sourcePath));
   if (!isNonEmptyString(llm.baseUrl) && !isNonEmptyString(llm.baseUrlEnv)) {
     missing.push("llm.baseUrl");
   }
@@ -104,6 +107,7 @@ function normalizeConfig(config: RawConfig, baseDir: string, env: NodeJS.Process
   }
 
   return {
+    ...(config.icons !== undefined ? { icons: normalizeIcons(config.icons, baseDir) } : {}),
     llm: {
       baseUrl: baseUrl.replace(/\/+$/, ""),
       baseUrlEnv: config.llm.baseUrlEnv,

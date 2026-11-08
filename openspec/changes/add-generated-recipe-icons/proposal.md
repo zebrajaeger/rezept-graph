@@ -8,7 +8,7 @@ German translation: [proposal_de.md](proposal_de.md).
 
 - Introduce an image-library component that resolves ingredient and process concepts to stable motif identifiers and returns a usable local image or an explicit unavailable result.
 - Add configuration for disabled icons, local-only reuse, or generate-on-miss behavior. Existing configurations remain valid and do not initiate image generation.
-- Generate missing motifs through the Codex command-line agent as the first generator backend, using a versioned style prompt emphasizing colored schematic illustrations, strong contours, few details, and small-size recognition. Prove noninteractive image-file generation before integration.
+- Generate missing motifs through the Codex command-line agent as the first generator backend, using a versioned recognition-oriented style prompt. Explicitly trust its version-reviewed internal image cache writer; the application correlates, validates, and copies an artifact into staging rather than requiring the agent to save directly to the requested target. Prove the acquisition contract before integration; agent commands retain restricted writes.
 - Persist reusable image/metadata bundles in a configurable, Git-friendly directory. Record provenance and configured usage-terms information without credentials.
 - Check actual file availability, not metadata alone. Repair missing or unusable assets through generation when enabled; otherwise keep text-only nodes and report unmet demand.
 - Enrich ingredient and process nodes without replacing labels, recipe facts, graph connectivity, or existing execution cues. Produce portable SVG/PNG outputs.

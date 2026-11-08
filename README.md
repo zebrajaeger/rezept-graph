@@ -16,6 +16,7 @@ data, ingredient lists, and Mermaid graphs through a CLI.
 | Backend und Datenfluss / Backend and data flow | [Architektur](docs/backend-architecture_de.md) | [Architecture](docs/backend-architecture_en.md) |
 | SVG-/PNG-Rendering / SVG/PNG rendering | [Bildausgabe](docs/graph-rendering_de.md) | [Image outputs](docs/graph-rendering_en.md) |
 | Kochablauf für eine Person / Single-person cooking guide | [Kochansicht](docs/cooking-timeline_de.md) | [Cooking view](docs/cooking-timeline_en.md) |
+| Rezept-Icons / Recipe icons | [Bildbibliothek](docs/recipe_icons_de.md) | [Icon library](docs/recipe_icons_en.md) |
 
 **Voraussetzung / Requirement:** Node.js **24+**.
 

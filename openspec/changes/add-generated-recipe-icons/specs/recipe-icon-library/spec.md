@@ -39,15 +39,25 @@ The icon component SHALL resolve ingredient/process concepts to safe namespaced 
 - **THEN** it cannot cause asset reads or writes outside the library
 
 ### Requirement: Codex generation uses a verified bounded process contract
-The initial generator adapter SHALL invoke an installed Codex CLI through a verified noninteractive image-generation workflow and accept only a designated validated PNG artifact in an operation-specific staging workspace. Invocation SHALL use a tested platform-safe executable/argument strategy without shell interpolation of recipe text, bounded diagnostics, finite timeout, and process-tree termination on timeout/cancellation. Agent write access SHALL be restricted to staging without blanket sandbox/approval bypass or repository write permissions. Missing CLI, unavailable image capability/authentication, process errors, successful exits without a valid artifact, and out-of-workspace artifacts SHALL yield unavailable results rather than recipe failure. The adapter SHALL NOT silently substitute another generator. Local-only/off modes SHALL NOT launch Codex. Automated tests SHALL substitute a process runner and SHALL NOT invoke live Codex or paid generation.
+The initial generator adapter SHALL invoke an installed Codex CLI through a verified noninteractive image-generation workflow. Codex's version-reviewed internal image writer MAY save to its configured `generated_images` cache as an explicit trusted-client exception; this SHALL NOT be represented as OS-enforced staging confinement. Agent command write access SHALL remain restricted to operation-specific staging without blanket sandbox/approval bypass or repository write permissions. The application, not the agent, SHALL validate and copy an unambiguously session-correlated cache PNG into its designated staging destination before publication. Cache originals SHALL remain untouched. Invocation SHALL use a tested platform-safe executable/argument strategy without shell interpolation of recipe text, bounded diagnostics, finite timeout, and process-tree termination on timeout/cancellation. Missing CLI, unavailable image capability/authentication, process errors, successful exits without a valid artifact, ambiguous candidates, and paths outside the verified cache/session boundary SHALL yield unavailable results rather than recipe failure. The adapter SHALL NOT silently substitute another generator. Local-only/off modes SHALL NOT launch Codex. Automated tests SHALL substitute a process runner and SHALL NOT invoke live Codex or paid generation.
+
+Session identity SHALL come from validated structured CLI events, not agent prose. For a fresh session, the adapter MAY select exactly one regular PNG from the precisely derived session cache directory after process completion, provided freshness, exclusive operation ownership, path confinement, link/reparse-point handling, bounded enumeration, and file-identity checks are proven. Zero or multiple candidates SHALL be rejected; scanning the whole cache or selecting the newest file SHALL NOT be used. If `exec` cannot satisfy these checks, a separately verified structured app-server image-event contract MAY be used instead. Neither transport SHALL be assumed proven by this requirement. Prompt instructions SHALL NOT be treated as enforcement of filesystem restrictions or image-call budgets.
 
 #### Scenario: Codex produces the designated image
-- **WHEN** the verified Codex workflow finishes and the designated staging PNG passes validation
+- **WHEN** the verified Codex workflow finishes and the application correlates, validates, and copies its cache PNG into the designated staging destination
 - **THEN** the image can be published through the library's normal bundle contract
 
 #### Scenario: Text success is not image success
-- **WHEN** Codex exits successfully but provides only text, an external artifact path, or no usable designated PNG
+- **WHEN** Codex exits successfully but provides only text, an out-of-boundary artifact path, ambiguous cache candidates, or no usable PNG
 - **THEN** acquisition returns unavailable and no valid asset is published
+
+#### Scenario: Codex uses its internal image cache
+- **WHEN** the version-reviewed internal writer saves an image in the verified cache/session boundary
+- **THEN** the application validates and copies it to operation-owned staging without modifying the original or claiming that the command sandbox confined the internal writer
+
+#### Scenario: Multiple images exist in the fresh session
+- **WHEN** session-directory acquisition finds more than one PNG candidate
+- **THEN** acquisition returns unavailable rather than choosing by modification time or agent text
 
 #### Scenario: Codex capability is unavailable
 - **WHEN** the executable, authentication, or supported image-generation workflow is unavailable
@@ -83,6 +93,8 @@ The library SHALL persist Git-friendly motif bundles containing image bytes and 
 ### Requirement: Missing assets are generated on demand when enabled
 In `generate-missing` mode, the component SHALL attempt to generate and persist a technically valid missing motif before returning it for current use. A metadata-only entry, missing metadata, unsupported/malformed metadata, missing image, or invalid image SHALL NOT count as an available asset. Replacement of conflicting bundles SHALL use a new safe revision without destroying existing files. Publication SHALL expose only validated assets, metadata last, and recover from incomplete publication as a cache miss. Concurrent same-motif requests within one process SHALL share acquisition, and each motif SHALL have at most one provider attempt per run. `local-only` mode SHALL never generate.
 
+The application SHALL launch at most one bounded Codex session per motif per program run, without application-level automatic retries. Concurrent requests SHALL share that session. This is NOT a guarantee of one underlying image-service request: Codex may make repeated image requests internally, including failed attempts that leave no PNG. Timeout and resource limits bound the session, not its monetary cost. This limitation SHALL be disclosed when documenting generation mode.
+
 #### Scenario: First egg request generates an asset
 - **WHEN** generation is enabled and no egg bundle exists
 - **THEN** one valid egg image and metadata are saved and the current request receives that image
@@ -98,7 +110,7 @@ In `generate-missing` mode, the component SHALL attempt to generate and persist 
 
 #### Scenario: Two requests arrive together
 - **WHEN** two in-process requests need the same missing motif
-- **THEN** they share at most one provider attempt and use the same published result
+- **THEN** they share at most one bounded Codex session and use the same published result
 
 #### Scenario: Publication is interrupted
 - **WHEN** acquisition leaves only incomplete staging files or an incomplete bundle

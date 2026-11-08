@@ -8,7 +8,7 @@ Die kanonische OpenSpec-Datei ist [proposal.md](proposal.md); diese Datei ist di
 
 - Eigene Bildkomponente: Zutaten und Verarbeitungsschritte werden stabilen Motivkennungen zugeordnet. Ergebnis ist ein verwendbares lokales Bild oder eine ausdrückliche Nichtverfügbarkeit.
 - Drei Config-Modi: ausgeschaltet, nur lokale Bilder und automatische Generierung fehlender Bilder. Bestehende Konfigurationen bleiben gültig und lösen keine Bildgenerierung aus.
-- Codex-Kommandozeilenagent als erster Generator und versionierter Stilprompt: farbige, schematische Sachillustrationen, kräftige Konturen, wenige Details und Erkennbarkeit bei kleiner Darstellung. Nichtinteraktive Erzeugung echter Bilddateien vor Integration nachweisen.
+- Codex-Kommandozeilenagent als erster Generator und versionierter Stilprompt: farbige schematische Sachillustrationen mit kräftigen Konturen und wenigen Details. Versionsgeprüfte interne Codex-Cache-Ablage ausdrücklich als Vertrauensausnahme akzeptieren; unsere Anwendung ordnet die Datei zu, prüft und kopiert sie nach Staging. Agentenbefehle bleiben eingeschränkt. Sicheren Übernahmevertrag vor Integration nachweisen.
 - Git-taugliche Motivpakete aus Bild und Metadaten in einem konfigurierbaren Verzeichnis. Herkunft und hinterlegte Nutzungsbedingungen werden ohne Zugangsdaten dokumentiert.
 - Nicht nur Metadaten prüfen, sondern die Bilddatei selbst. Fehlende oder unbrauchbare Bilder je nach Modus nachgenerieren oder den Knoten ohne Bild ausgeben; offenen Bedarf festhalten.
 - Bilder ergänzen Zutaten- und Prozessknoten, ohne Text, Rezeptdaten, Verbindungen oder vorhandene Ausführungshinweise zu ersetzen. SVG und PNG bleiben eigenständig verwendbar.

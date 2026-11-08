@@ -54,6 +54,7 @@ export async function main(argv = process.argv.slice(2), env: NodeJS.ProcessEnv 
     await analyzeUrls({
       urls, config, fetcher: deps.fetcher || fetch,
       client: createCompletionClient(config.llm, { env, fetcher: deps.llmFetcher || fetch }, deps.llmClient),
+      onWarning: message => process.stderr.write(`Warning: ${message}\n`),
       onProgress: ({ url, outputs }) => {
         process.stdout.write(
           [

@@ -13,10 +13,11 @@ test("responsibility imports stay within concrete allowed boundaries", () => {
     discovery: ["discovery"],
     ingestion: ["ingestion", "config"],
     presentation: ["presentation", "recipe"],
-    output: ["output", "recipe", "presentation"],
+    output: ["output", "recipe", "presentation", "icons"],
     planning: ["planning", "recipe", "llm", "ingestion", "analysis", "output", "presentation"],
-    workflows: ["workflows", "ingestion", "analysis", "discovery", "llm", "output", "config", "planning"],
-    config: ["config", "cli"],
+    workflows: ["workflows", "ingestion", "analysis", "discovery", "llm", "output", "config", "planning", "icons"],
+    config: ["config", "cli", "icons"],
+    icons: ["icons"],
     cli: ["cli", "config", "workflows", "llm", "ingestion", "output", "planning"],
   };
   for (const [area, dependencies] of Object.entries(allowed)) {

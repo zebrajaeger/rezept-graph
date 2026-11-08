@@ -6,6 +6,7 @@ import { preparePresentation, type RenderOptions } from "../presentation/prepare
 import type { RecipeAnalysis, Ingredient } from "../recipe/recipe-types";
 import { renderGraphImages } from "./image-renderer";
 import { CliError } from "../errors";
+import { enrichIconPresentation } from "./icon-presentation";
 
 export async function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: string, options: RenderOptions = {}, deps: { renderImages?: typeof renderGraphImages } = {}) {
   fs.mkdirSync(outputDir, { recursive: true });
@@ -29,9 +30,9 @@ export async function writeRecipeOutputs(analysis: RecipeAnalysis, outputDir: st
   fs.writeFileSync(ingredientsPath, `${normalizedAnalysis.ingredientList.join("\n")}\n`);
   fs.writeFileSync(
     mermaidPath,
-    renderMermaid(preparePresentation(normalizedAnalysis, {
+    renderMermaid(enrichIconPresentation(preparePresentation(normalizedAnalysis, {
       includeIntermediateStates: options.includeIntermediateStates,
-    }))
+    }), options.icons))
   );
 
   const stagingDir = fs.mkdtempSync(path.join(outputDir, ".render-"));

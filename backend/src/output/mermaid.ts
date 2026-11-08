@@ -2,7 +2,7 @@ import type { RecipeNode } from "../recipe/recipe-types";
 import type { Presentation, PresentationNode } from "../presentation/prepare-presentation";
 
 export function renderMermaid(presentation: Presentation) {
-  const lines = ["flowchart TD", ...styleLines()];
+  const lines = [...(presentation.nodes.some(node => node.icon) ? ["---", "config:", "  htmlLabels: false", "---"] : []), "flowchart TD", ...styleLines()];
   for (const node of presentation.nodes) {
     lines.push(`  ${renderNode(node)}`);
     lines.push(`  class ${safeId(node.id)} ${classForNode(node)};`);
@@ -28,6 +28,10 @@ function styleLines() {
 function renderNode(node: PresentationNode) {
   const id = safeId(node.id);
   const label = escapeLabel(formatNodeLabel(node));
+  if (node.icon && node.type !== "intermediate" && /^data:image\/png;base64,[A-Za-z0-9+/]+=*$/.test(node.icon.dataUri)) {
+    const safeLabel = label.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/[\r\n]/g, " ").replace(/\\n/g, " ");
+    return `${id}@{ img: "${node.icon.dataUri}", label: "${safeLabel}", pos: "b", w: 48, h: ${Math.max(1, Math.round(48 * node.icon.height / node.icon.width))}, constraint: "on" }`;
+  }
   if (node.type === "ingredient") {
     return `${id}(["${label}"])`;
   }
