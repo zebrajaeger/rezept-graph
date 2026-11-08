@@ -11,6 +11,7 @@
     "typecheck": "tsc -p tsconfig.check.json",
     "prestart": "npm run build",
     "start": "node dist/cli.js",
+    "example": "npm start -- analyze --config ../config.json --urls examples/recipe-urls.txt",
     "prepack": "npm run build",
     "test": "npm run typecheck && npm run build && node -e \"require('node:fs').rmSync('.test-dist',{recursive:true,force:true})\" && tsc -p tsconfig.test.json && node --test --test-isolation=none .test-dist/test/*.test.js"
   },

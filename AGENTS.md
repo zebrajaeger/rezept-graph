@@ -17,16 +17,23 @@
 - Erzeuge Screenshots und binde sie ein, wenn es einen Mehrwert bietet.
 
 ## Organisation
-- Ich möchte das Projekt auch nach einer längeren Pause wieder aufnehmen können.
-  - Dazu gibt es im Hauptverzeichnis die Datei `next_step.md`.
-  - Die `next_step.md` muss immer aktuell gehalten werden.
-  - Gleich am Anfang steht, was ein kleiner möglicher Einstiegspunkt sein könnte.
-  - Es soll eine Sektion geben, welche den aktuellen Zustand in wenigen Worten beschreibt.
+Als Hilfestellung: stell dir vor, der Entwickler hat ADHS und möchte mit möglichst wenig Aufwand wieder in das Projekt einsteigen.
+
+- Es gibt im Hauptverzeichnis die Datei `next_step.md`.
+- Die `next_step.md` muss immer aktuell gehalten werden.
+- Die `next_step.md` wird ausschließlich in deutscher Sprache gepflegt.
+- Den Anfang bildet die Sektion, wo in der kürzest möglichen Form steht, was ich tun muss, um das Projekt auszuführen.
+- In der zweiten Sektion steht, was ein kleiner möglicher Einstiegspunkt sein könnte.
+  - Der Einstiegspunkt ist im Idealfall ein kleine Feature.
+  - Es muss nicht wichtig sein.
+  - Es sollte aber interessant sein und ein schnelles Erfplgserlebnis bieten.
+  - Es geht darum, nach eine längeren Pasue, den Einstieg zu finden.
+- Danach soll es eine Sektion geben, welche den aktuellen Zustand in knapper Form beschreibt.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **rezept-graph** (681 symbols, 1166 relationships, 36 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **rezept-graph** (864 symbols, 1401 relationships, 35 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 
