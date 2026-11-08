@@ -7,6 +7,7 @@ import { IconLibrary } from "../src/icons/library";
 import { normalizeIcons } from "../src/icons/icon-config";
 import type { IconGenerator } from "../src/icons/generator";
 import { validatePng } from "../src/icons/png";
+import { transparentPng } from "./fixtures/transparent-icon";
 
 // Valid 1x1 RGBA PNG, generated locally with known CRCs by the fixture builder.
 import { deflateSync } from "node:zlib";
@@ -18,10 +19,11 @@ function fixturePng(): Buffer {
   const header = Buffer.alloc(13); header.writeUInt32BE(1); header.writeUInt32BE(1, 4); header[8] = 8; header[9] = 6;
   return Buffer.concat([Buffer.from("89504e470d0a1a0a", "hex"), chunk("IHDR", header), chunk("IDAT", deflateSync(Buffer.from([0, 255, 0, 0, 255]))), chunk("IEND", Buffer.alloc(0))]);
 }
-export const png = fixturePng();
+export const png = transparentPng;
 
 test("PNG validates actual scanline data and CRC and rejects corruption", () => {
-  assert.deepEqual(validatePng(png), { width: 1, height: 1, mime: "image/png" });
+  assert.deepEqual(validatePng(png), { width: 10, height: 10, mime: "image/png" });
+  assert.deepEqual(validatePng(fixturePng()), { width: 1, height: 1, mime: "image/png" });
   const corrupt = Buffer.from(png); corrupt[corrupt.length - 6] = corrupt[corrupt.length - 6]! ^ 1;
   assert.throws(() => validatePng(corrupt), /PNG/);
 });

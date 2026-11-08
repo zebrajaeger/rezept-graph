@@ -1,5 +1,27 @@
 # Rezept-Icons
 
+## Transparente Hintergründe für neue Icons
+
+### Echter Drei-Eier-Test
+
+Am 08.11.2026 auf Nutzerwunsch genau eine neue Codex-Sitzung für `ingredients/egg-raw-count-3` ausgeführt: erfolgreich, Transparenzprüfung bestanden. Original samt Herkunftsmetadaten unter `assets/recipe-icons/ingredients/egg-raw-count-3/` gespeichert; altes `egg-count-3` unverändert. Anschließend Wiederverwendung im Modus `local-only` ohne neue Generierung geprüft. Anzeigederivat: 96 × 64 Pixel, 5911 Byte. Sichtprüfung: drei ganze rohe Eier, kein weißes Rechteck auf grünem oder dunklem Hintergrund. Nutzerabnahme bleibt separat.
+
+![Echte neue Dreiergruppe auf grünem und dunklem Hintergrund sowie bei 48 Pixeln](images/icon-transparency/three-eggs-live.png)
+
+Das Paket kann die zustandsbewusste Darstellung bei `icons.presentation: true` für drei rohe Eier wiederverwenden. Diese Option wurde nicht automatisch in der aktiven Config eingeschaltet. Kein weiterer Bildaufruf freigegeben; die gespeicherte Apfelkuchenausgabe wurde nicht neu gerendert.
+
+Stil `recipe-icon-v2-transparent` verlangt ein freigestelltes Motiv auf echter transparenter PNG-Fläche mit transparentem Rand statt weißem Rechteck oder aufgemaltem Schachbrett. Vor Veröffentlichung **neu generierter** Originale rekonstruiert eine providerunabhängige Prüfung die PNG-Filter und wertet effektive Alphawerte aus: alle äußersten Randpixel vollständig transparent, mindestens 1 % vollständig transparent und mindestens 1 % sichtbar. Weiße Motivdetails und geglättete Konturen im Inneren bleiben erhalten; keine Entfernung weißer Pixel. Unterstützte Alphaformate und gültige Grau-/RGB-`tRNS`-Schlüssel werden bei 8/16 Bit innerhalb der bisherigen 4-MiB-/4096-Pixel-Grenzen geprüft (Rohdatenstrom höchstens etwa 128 MiB plus Zeilenpräfixe).
+
+Deckende Kandidaten erhalten im Bedarfsbericht `background-not-transparent`; der bestehende Fallback greift (passendes Grundmotiv mit Zahl, falls vorhanden, sonst Text). Keine automatische Wiederholung oder Providerumschaltung. Badges und Alternativbeschriftungen bleiben absichtliche lokale Überlagerungen, keine generierten Hintergründe. Dies ist eine technische Rand-/Flächenprüfung, keine vollständige Segmentierung: innere deckende Reste benötigen gegebenenfalls Sichtprüfung.
+
+Alte gültige deckende Pakete bleiben nach Promptänderungen unverändert verwendbar. **Das vorhandene Drei-Eier-Bild wird nicht automatisch ersetzt.** Austausch oder neue Generierung benötigen separate Freigabe und bewusste Revisionsauswahl; das direkte gültige Paket hat Vorrang vor späteren Revisionen. Der offene Providerumbau muss diese Icon-Fachregel erhalten, ohne alle allgemeinen Bildanfragen auf Transparenz festzulegen.
+
+Offline-Nachweis mit deterministischer Testgrafik, ohne Live-Generierung:
+
+![Weißes Motiv auf grünem und dunklem Hintergrund erhalten; deckende Bildfläche abgelehnt](images/icon-transparency/contact-sheet.png)
+
+Nach Testkompilierung im Verzeichnis `backend` mit `node .test-dist/test/fixtures/render-transparency-proof.js` neu erzeugbar. Verkleinerung, Cachewiederverwendung, native SVG-Einbettung und fertige PNG-Darstellung sind offline getestet. Keine Änderung der Display-Cacheversion nötig, da die bestehende Transformation Alpha bereits erhält.
+
 ## Zustände von Eiern
 
 Bei aktivierter neuer Interpretation/Darstellung tragen Eier einen validierten Zustand `raw`, `boiled` oder `fried`. Einfache Eierangaben gelten als rohe ganze Eier mit intakter Schale; explizit gekochte oder gebratene Eier bleiben getrennt. Unterstützte Beispiele: `3 Eier, Größe M`, `2 rohe Eier`, `2 gekochte Eier`, `hart gekochtes Ei`, `Spiegelei`, `2 gebratene Eier`, `boiled egg`, `fried egg`. Widersprüchliche Zustände, aufgeschlagene Eier, Rührei, pochierte Eier, Eiweiß und Eigelb bleiben vorerst Text statt falscher Ganz-Ei-Zuordnung.

@@ -5,6 +5,7 @@ import type { IconConfig } from "./icon-config";
 import type { IconGenerator } from "./generator";
 import { buildIconPrompt, STYLE_VERSION, type Motif } from "./motif";
 import { validatePng } from "./png";
+import { hasTransparentBackground } from "./png-background";
 
 const checksum = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
 const safeKey = /^(ingredients|processes)\/[a-z][a-z0-9-]{0,63}$/;
@@ -89,6 +90,11 @@ export class IconLibrary {
       if (!result.available) { this.reasons.set(motif.key, result.reason); return undefined; }
       if (result.stagingPngPath !== stagingPngPath) { this.reasons.set(motif.key, "artifact"); return undefined; }
       const bytes = readRegular(stagingPngPath, 4194304), dimensions = validatePng(bytes);
+      if (!hasTransparentBackground(bytes)) {
+        this.reasons.set(motif.key, "background-not-transparent");
+        this.deps.warn?.("Generated icon lacks a transparent background; using text fallback. No automatic retry.");
+        return undefined;
+      }
       const metadata = { schemaVersion: 1, key: motif.key, concept: motif.concept, imagePath: "image.png", checksum: checksum(bytes), ...dimensions, identity: result.identity, createdAt: new Date().toISOString(), prompt, styleVersion: STYLE_VERSION, termsReference: this.config.generator?.termsReference || "unknown" };
       const root = path.join(this.config.libraryDirectory, motif.key); safeDirectory(root);
       fs.mkdirSync(path.dirname(root), { recursive: true });

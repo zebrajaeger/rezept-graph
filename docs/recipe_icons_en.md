@@ -1,5 +1,27 @@
 # Recipe icons
 
+## Transparent backgrounds for new icons
+
+### Live three-egg trial
+
+On 2026-11-08, the user authorized one new Codex session for `ingredients/egg-raw-count-3`: successful, transparency gate passed. Original and provenance metadata are saved under `assets/recipe-icons/ingredients/egg-raw-count-3/`; legacy `egg-count-3` remains unchanged. Subsequent `local-only` reuse succeeded without generation. Display derivative: 96 × 64 pixels, 5911 bytes. Visual inspection shows three whole raw eggs without a white rectangle on green or dark backgrounds; user acceptance remains separate.
+
+![New live three-egg group on green and dark backgrounds and at 48 pixels](images/icon-transparency/three-eggs-live.png)
+
+State-aware presentation can reuse the bundle for three raw eggs with `icons.presentation: true`. Active configuration was not automatically changed. No further image requests are authorized; the stored apple-cake export was not rerendered.
+
+Style `recipe-icon-v2-transparent` requires an isolated motif on a truly transparent PNG canvas with transparent margins, not a white rectangle or painted checkerboard. Before publishing **newly generated** originals, a provider-independent gate reconstructs PNG filters and inspects effective alpha: every outer border pixel must be fully transparent, at least 1% of pixels fully transparent, and at least 1% visible. White foreground details and interior antialiased contours are retained; no white-pixel removal is performed. Supported alpha formats and valid grayscale/RGB `tRNS` keys are inspected at 8/16 bits within existing 4 MiB/4096px limits (raw stream bounded to about 128 MiB plus scanline prefixes).
+
+Opaque candidates produce `background-not-transparent` in unmet demand and use the existing fallback (a matching base/count variant where available, otherwise text). No automatic retry or provider switch. Badges and alternative captions remain intentional local overlays, not generated backgrounds. This is a technical margin/area check, not full segmentation: interior opaque patches may still need visual review.
+
+Existing valid opaque bundles remain reusable, unchanged, even after the prompt version changes. **The existing three-egg image is not automatically replaced.** Replacing it or generating a new image needs separate authorization and deliberate revision selection; the direct valid bundle wins over later revisions. The pending pluggable-provider change must preserve this icon-domain gate without imposing it on all general-purpose image requests.
+
+Offline proof (deterministic test artwork, no live generation):
+
+![White foreground preserved on green and dark backgrounds; opaque canvas rejected](images/icon-transparency/contact-sheet.png)
+
+To regenerate the proof after compiling tests, run `node .test-dist/test/fixtures/render-transparency-proof.js` from `backend`. Resize/cache reuse, native SVG embedding and final PNG compositing are covered by offline tests. No display-cache version change was needed because the existing transformation already preserves alpha.
+
 ## Egg states
 
 With the new interpretation/presentation enabled, eggs carry a validated `raw`, `boiled` or `fried` state. Plain eggs default to whole raw eggs with intact shells; explicit boiled/fried eggs remain separate. Supported examples include `3 Eier, Größe M`, `2 rohe Eier`, `2 gekochte Eier`, `hart gekochtes Ei`, `Spiegelei`, `2 gebratene Eier`, `boiled egg` and `fried egg`. Conflicting states, cracked eggs, scrambled/poached eggs, whites and yolks currently retain text rather than incorrectly selecting a whole egg.
