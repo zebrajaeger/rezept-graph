@@ -1,5 +1,7 @@
 # Aufgabenübersicht
 
+**Archiventscheidung vom 08.11.2026:** Auf ausdrückliche Bestätigung mit 18/21 erledigten Aufgaben archiviert, Hauptspecs synchronisiert. 1.3, 5.3 und 5.4 bleiben unerledigt; Archivierung ist keine vollständige Sicherheitsfreigabe. Keine zusätzliche Live-Generierung.
+
 Die nachverfolgte Checkliste steht in [tasks.md](tasks.md). Diese Übersetzung erzeugt keine zweite Fortschrittsliste. Implementierung erst nach Verlassen des Erkundungsmodus; vor Änderungen bestehender Symbole GitNexus-Auswirkungsanalyse mit Bericht, bei hohem Risiko ausdrücklich warnen. Immer zuerst fehlschlagende Tests, dann Implementierung.
 
 ## 1. Machbarkeit und Grenzen
