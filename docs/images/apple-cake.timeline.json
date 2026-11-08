@@ -1,0 +1,370 @@
+{
+  "language": "de",
+  "endpoint": "fertig gebacken",
+  "assumptions": [
+    "Vorbereitung und Vorheizen geschätzt; Tempo kann abweichen",
+    "Abkühlzeit nicht enthalten",
+    "Startzeiten sind ungefähre Vorschläge"
+  ],
+  "phases": [
+    {
+      "id": "p1",
+      "processId": "p1",
+      "instruction": "26-cm-Springform einfetten",
+      "attention": "hands-on",
+      "dependencies": [],
+      "duration": {
+        "min": 2,
+        "max": 2,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 0,
+        "max": 0
+      },
+      "end": {
+        "min": 2,
+        "max": 2
+      }
+    },
+    {
+      "id": "oven-on",
+      "processId": "p2",
+      "instruction": "Backofen auf 200 °C Ober-/Unterhitze einschalten",
+      "attention": "hands-on",
+      "dependencies": [],
+      "duration": {
+        "min": 1,
+        "max": 1,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "oven-on",
+      "start": {
+        "min": 8,
+        "max": 8
+      },
+      "end": {
+        "min": 9,
+        "max": 9
+      }
+    },
+    {
+      "id": "p2",
+      "processId": "p2",
+      "instruction": "Backofen vorheizen",
+      "attention": "unattended",
+      "dependencies": [
+        "oven-on"
+      ],
+      "duration": {
+        "min": 15,
+        "max": 15,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": "200 °C Ober-/Unterhitze",
+      "readiness": "Nur in den tatsächlich vorgeheizten Ofen einschieben",
+      "returnCue": null,
+      "role": "preheat",
+      "start": {
+        "min": 9,
+        "max": 9
+      },
+      "end": {
+        "min": 24,
+        "max": 24
+      }
+    },
+    {
+      "id": "p3",
+      "processId": "p3",
+      "instruction": "125 g weiches Fett, 125 g Zucker und 3 Eier verrühren",
+      "attention": "hands-on",
+      "dependencies": [],
+      "duration": {
+        "min": 4,
+        "max": 4,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 2,
+        "max": 2
+      },
+      "end": {
+        "min": 6,
+        "max": 6
+      }
+    },
+    {
+      "id": "p4",
+      "processId": "p4",
+      "instruction": "250 g Mehl und ½ Päckchen Backpulver mischen",
+      "attention": "hands-on",
+      "dependencies": [],
+      "duration": {
+        "min": 1,
+        "max": 1,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 6,
+        "max": 6
+      },
+      "end": {
+        "min": 7,
+        "max": 7
+      }
+    },
+    {
+      "id": "p5",
+      "processId": "p5",
+      "instruction": "Mehlmischung kurz unter die Ei-Masse rühren",
+      "attention": "hands-on",
+      "dependencies": [
+        "p3",
+        "p4"
+      ],
+      "duration": {
+        "min": 1,
+        "max": 1,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 7,
+        "max": 7
+      },
+      "end": {
+        "min": 8,
+        "max": 8
+      }
+    },
+    {
+      "id": "p6",
+      "processId": "p6",
+      "instruction": "1,5 kg Äpfel schälen, entkernen und achteln",
+      "attention": "hands-on",
+      "dependencies": [],
+      "duration": {
+        "min": 12,
+        "max": 12,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 9,
+        "max": 9
+      },
+      "end": {
+        "min": 21,
+        "max": 21
+      }
+    },
+    {
+      "id": "p7",
+      "processId": "p7",
+      "instruction": "Apfelstücke unter den Teig heben",
+      "attention": "hands-on",
+      "dependencies": [
+        "p5",
+        "p6"
+      ],
+      "duration": {
+        "min": 2,
+        "max": 2,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 21,
+        "max": 21
+      },
+      "end": {
+        "min": 23,
+        "max": 23
+      }
+    },
+    {
+      "id": "p8",
+      "processId": "p8",
+      "instruction": "Teig in die Form füllen und glattstreichen",
+      "attention": "hands-on",
+      "dependencies": [
+        "p1",
+        "p7"
+      ],
+      "duration": {
+        "min": 2,
+        "max": 2,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 23,
+        "max": 23
+      },
+      "end": {
+        "min": 25,
+        "max": 25
+      }
+    },
+    {
+      "id": "p9",
+      "processId": "p9",
+      "instruction": "Auf unterer Schiene backen",
+      "attention": "unattended",
+      "dependencies": [
+        "p2",
+        "p8"
+      ],
+      "duration": {
+        "min": 45,
+        "max": 45,
+        "provenance": "recipe",
+        "evidence": "Erste 45 Minuten backen"
+      },
+      "temperature": "200 °C Ober-/Unterhitze",
+      "readiness": null,
+      "returnCue": null,
+      "role": "oven-use",
+      "start": {
+        "min": 25,
+        "max": 25
+      },
+      "end": {
+        "min": 70,
+        "max": 70
+      }
+    },
+    {
+      "id": "p10",
+      "processId": "p10",
+      "instruction": "Kuchen mit 60 g Butter bestreichen",
+      "attention": "hands-on",
+      "dependencies": [
+        "p9"
+      ],
+      "duration": {
+        "min": 2,
+        "max": 2,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": "Nach 45 Minuten Backzeit wieder dran",
+      "role": "normal",
+      "start": {
+        "min": 70,
+        "max": 70
+      },
+      "end": {
+        "min": 72,
+        "max": 72
+      }
+    },
+    {
+      "id": "p11",
+      "processId": "p11",
+      "instruction": "50 g Zucker oder Zimtzucker aufstreuen",
+      "attention": "hands-on",
+      "dependencies": [
+        "p10"
+      ],
+      "duration": {
+        "min": 1,
+        "max": 1,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 72,
+        "max": 72
+      },
+      "end": {
+        "min": 73,
+        "max": 73
+      }
+    },
+    {
+      "id": "p12",
+      "processId": "p12",
+      "instruction": "Kuchen fertig backen",
+      "attention": "unattended",
+      "dependencies": [
+        "p11",
+        "p2"
+      ],
+      "duration": {
+        "min": 5,
+        "max": 10,
+        "provenance": "recipe",
+        "evidence": "Weitere 5–10 Minuten; insgesamt 50–55 Minuten"
+      },
+      "temperature": "200 °C Ober-/Unterhitze",
+      "readiness": null,
+      "returnCue": null,
+      "role": "oven-use",
+      "start": {
+        "min": 73,
+        "max": 73
+      },
+      "end": {
+        "min": 78,
+        "max": 83
+      }
+    }
+  ],
+  "suggested": true,
+  "total": {
+    "min": 78,
+    "max": 83
+  },
+  "handsOn": {
+    "min": 28,
+    "max": 28
+  },
+  "attended": {
+    "min": 0,
+    "max": 0
+  }
+}

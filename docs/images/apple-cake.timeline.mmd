@@ -1,0 +1,127 @@
+---
+title: "Planungsvorschlag · ca. 78–83 min"
+---
+flowchart TD
+  classDef ingredient fill:#e6f4ea,stroke:#2f6f4e,stroke-width:2px,color:#173b28;
+  classDef process fill:#e8f1ff,stroke:#2458a6,stroke-width:2px,color:#102c57;
+  classDef processHot fill:#ffe1df,stroke:#b42318,stroke-width:3px,color:#5f150f;
+  classDef processColdPassive fill:#eee7ff,stroke:#6b46c1,stroke-width:2px,stroke-dasharray:6 4,color:#39205f;
+  classDef processPassive fill:#f3f4f6,stroke:#667085,stroke-width:2px,stroke-dasharray:6 4,color:#344054;
+  classDef intermediate fill:#fff5cc,stroke:#9a6b00,stroke-width:2px,color:#4a3300;
+subgraph row0[" "]
+direction LR
+  step0["Ab ca. 0 min · Du machst
+26-cm-Springform einfetten
+2 min · geschätzt"]
+  class step0 process;
+end
+style row0 fill:transparent,stroke:transparent
+subgraph row1[" "]
+direction LR
+  step3["Ab ca. 2 min · Du machst
+125 g weiches Fett, 125 g Zucker und 3 Eier verrühren
+4 min · geschätzt"]
+  class step3 process;
+end
+style row1 fill:transparent,stroke:transparent
+step0 --> step3
+subgraph row2[" "]
+direction LR
+  step4["Ab ca. 6 min · Du machst
+250 g Mehl und ½ Päckchen Backpulver mischen
+1 min · geschätzt"]
+  class step4 process;
+end
+style row2 fill:transparent,stroke:transparent
+step3 --> step4
+subgraph row3[" "]
+direction LR
+  step5["Ab ca. 7 min · Du machst
+Mehlmischung kurz unter die Ei-Masse rühren
+1 min · geschätzt"]
+  class step5 process;
+end
+style row3 fill:transparent,stroke:transparent
+step4 --> step5
+subgraph row4[" "]
+direction LR
+  step1["Ab ca. 8 min · Du machst
+Backofen auf 200 °C Ober-/Unterhitze einschalten
+1 min · geschätzt"]
+  class step1 process;
+end
+style row4 fill:transparent,stroke:transparent
+step5 --> step1
+subgraph row5[" "]
+direction LR
+  step2["Ab ca. 9 min · Läuft nebenher
+Backofen vorheizen
+15 min · geschätzt
+Nur in den tatsächlich vorgeheizten Ofen einschieben\n200 °C Ober-/Unterhitze"]
+  class step2 processHot;
+  step6["Ab ca. 9 min · Du machst
+1,5 kg Äpfel schälen, entkernen und achteln
+12 min · geschätzt"]
+  class step6 process;
+end
+style row5 fill:transparent,stroke:transparent
+step1 --> step2
+step1 --> step6
+subgraph row6[" "]
+direction LR
+  step7["Ab ca. 21 min · Du machst
+Apfelstücke unter den Teig heben
+2 min · geschätzt"]
+  class step7 process;
+end
+style row6 fill:transparent,stroke:transparent
+step2 --> step7
+step6 --> step7
+subgraph row7[" "]
+direction LR
+  step8["Ab ca. 23 min · Du machst
+Teig in die Form füllen und glattstreichen
+2 min · geschätzt"]
+  class step8 process;
+end
+style row7 fill:transparent,stroke:transparent
+step7 --> step8
+subgraph row8[" "]
+direction LR
+  step9["Ab ca. 25 min · Läuft nebenher
+Auf unterer Schiene backen
+45 min · laut Rezept\n200 °C Ober-/Unterhitze"]
+  class step9 processHot;
+end
+style row8 fill:transparent,stroke:transparent
+step8 --> step9
+subgraph row9[" "]
+direction LR
+  step10["Ab ca. 70 min · Du machst
+Kuchen mit 60 g Butter bestreichen
+2 min · geschätzt
+Wieder dran: Nach 45 Minuten Backzeit wieder dran"]
+  class step10 process;
+end
+style row9 fill:transparent,stroke:transparent
+step9 --> step10
+subgraph row10[" "]
+direction LR
+  step11["Ab ca. 72 min · Du machst
+50 g Zucker oder Zimtzucker aufstreuen
+1 min · geschätzt"]
+  class step11 process;
+end
+style row10 fill:transparent,stroke:transparent
+step10 --> step11
+subgraph row11[" "]
+direction LR
+  step12["Ab ca. 73 min · Läuft nebenher
+Kuchen fertig backen
+5–10 min · laut Rezept
+Bis: fertig gebacken
+Aktive Arbeit: 28 min · Beaufsichtigung: 0 min\n200 °C Ober-/Unterhitze"]
+  class step12 processHot;
+end
+style row11 fill:transparent,stroke:transparent
+step11 --> step12

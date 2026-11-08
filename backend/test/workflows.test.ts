@@ -4,6 +4,7 @@ import { analyzeUrls } from "../src/workflows/analyze-urls";
 import { seedChefkochUrls } from "../src/workflows/seed-chefkoch-urls";
 import type { Config } from "../src/config/config";
 import type { RecipeAnalysis } from "../src/recipe/recipe-types";
+import { fakePlanning } from "./fixtures/fake-planning";
 
 const config: Config = { llm: { baseUrl: "https://example.test", model: "test", apiKeyEnv: "KEY" }, cache: { directory: "cache", mode: "offline" }, output: { directory: "output", includeIntermediateStates: false } };
 const recipe: RecipeAnalysis = { metadata: { title: "Toast" }, ingredients: [], ingredientList: [], nodes: [], edges: [] };
@@ -15,6 +16,9 @@ test("analysis workflow runs in order with injected dependencies and progress, w
     extractRecipeContent: (html, sourceUrl) => { calls.push(`extract:${html}`); return { sourceUrl, extractionMethod: "text", text: html, structuredRecipe: null }; },
     analyzeRecipeContent: async ({ content }) => { calls.push(`analyze:${content.sourceUrl}`); return recipe; },
     writeRecipeOutputs: async () => { calls.push("write"); await Promise.resolve(); return { jsonPath: "a", ingredientsPath: "b", mermaidPath: "c", svgPath: "d", pngPath: "e" }; },
+    enrichPlanning: fakePlanning,
+    clearTimelineImages: () => {},
+    writeTimelineOutputs: async () => ({ timelineJsonPath: "f", timelineMermaidPath: "g", timelineSvgPath: "h", timelinePngPath: "i" }),
   });
   assert.deepEqual(calls, ["page:first", "extract:first", "analyze:first", "write", "progress:first", "page:second", "extract:second", "analyze:second", "write", "progress:second"]);
   assert.equal(results.length, 2);

@@ -6,6 +6,7 @@ import test from "node:test";
 import { writeCacheEntry } from "../src/ingestion/cache";
 import { main } from "../src/cli";
 import { writeFakeOutputs } from "./fixtures/fake-images";
+import { fakePlanning, writeFakeTimeline } from "./fixtures/fake-planning";
 
 test("CLI analyzes cached HTML offline and writes recipe outputs", async (t) => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "rezept-graph-e2e-"));
@@ -54,6 +55,7 @@ test("CLI analyzes cached HTML offline and writes recipe outputs", async (t) => 
     {},
     {
       writeRecipeOutputs: writeFakeOutputs,
+      enrichPlanning: fakePlanning, writeTimelineOutputs: writeFakeTimeline,
       fetcher: async () => {
         throw new Error("offline mode must not fetch");
       },

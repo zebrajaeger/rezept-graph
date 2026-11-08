@@ -11,6 +11,7 @@ import { validateRecipeAnalysis } from "../src/recipe/recipe-schema";
 import { writeCacheEntry } from "../src/ingestion/cache";
 import { analyzeUrls } from "../src/workflows/analyze-urls";
 import { fakeImages, writeFakeOutputs } from "./fixtures/fake-images";
+import { fakePlanning, writeFakeTimeline } from "./fixtures/fake-planning";
 
 const fixtures = path.resolve(__dirname, "../../test/fixtures");
 
@@ -53,7 +54,7 @@ test("fixed HTML and completion pass through the offline workflow without leakin
       assert.match(messages[1]!.content, /json-ld/);
       return JSON.stringify(recipe);
     } },
-  }, { writeRecipeOutputs: writeFakeOutputs });
+  }, { writeRecipeOutputs: writeFakeOutputs, enrichPlanning: fakePlanning, writeTimelineOutputs: writeFakeTimeline });
   const outputs = results[0]!.outputs;
   assert.equal(fs.readFileSync(outputs.jsonPath, "utf8"), baseline.json);
   assert.equal(fs.readFileSync(outputs.ingredientsPath, "utf8"), baseline.ingredients);

@@ -1,0 +1,83 @@
+---
+title: "Planungsvorschlag · ca. 70 min"
+---
+flowchart TD
+  classDef ingredient fill:#e6f4ea,stroke:#2f6f4e,stroke-width:2px,color:#173b28;
+  classDef process fill:#e8f1ff,stroke:#2458a6,stroke-width:2px,color:#102c57;
+  classDef processHot fill:#ffe1df,stroke:#b42318,stroke-width:3px,color:#5f150f;
+  classDef processColdPassive fill:#eee7ff,stroke:#6b46c1,stroke-width:2px,stroke-dasharray:6 4,color:#39205f;
+  classDef processPassive fill:#f3f4f6,stroke:#667085,stroke-width:2px,stroke-dasharray:6 4,color:#344054;
+  classDef intermediate fill:#fff5cc,stroke:#9a6b00,stroke-width:2px,color:#4a3300;
+subgraph row0[" "]
+direction LR
+  step0["Ab ca. 0 min · Du machst
+Teig kneten
+10 min · geschätzt"]
+  class step0 process;
+end
+style row0 fill:transparent,stroke:transparent
+subgraph row1[" "]
+direction LR
+  step1{{"Ab ca. 10 min · Läuft nebenher
+Teig abgedeckt gehen lassen
+30 min · geschätzt
+Bis sich das Volumen etwa verdoppelt hat"}}
+  class step1 processColdPassive;
+  step2["Ab ca. 10 min · Du machst
+Belag schneiden und bereitstellen
+10 min · geschätzt"]
+  class step2 process;
+end
+style row1 fill:transparent,stroke:transparent
+step0 --> step1
+step0 --> step2
+subgraph row2[" "]
+direction LR
+  step3["Ab ca. 20 min · Du machst
+Form einfetten
+3 min · geschätzt"]
+  class step3 process;
+end
+style row2 fill:transparent,stroke:transparent
+step1 --> step3
+step2 --> step3
+subgraph row3[" "]
+direction LR
+  step4["Ab ca. 23 min · Du machst
+Ofen auf 200 °C einschalten
+1 min · geschätzt"]
+  class step4 process;
+end
+style row3 fill:transparent,stroke:transparent
+step3 --> step4
+subgraph row4[" "]
+direction LR
+  step5["Ab ca. 24 min · Läuft nebenher
+Ofen vorheizen
+15 min · geschätzt
+Erst bei tatsächlicher Ofenbereitschaft einschieben"]
+  class step5 processHot;
+end
+style row4 fill:transparent,stroke:transparent
+step4 --> step5
+subgraph row5[" "]
+direction LR
+  step6["Ab ca. 40 min · Du machst
+Teig formen und belegen
+5 min · geschätzt
+Wieder dran: Nach der Gehzeit Teig prüfen"]
+  class step6 process;
+end
+style row5 fill:transparent,stroke:transparent
+step5 --> step6
+subgraph row6[" "]
+direction LR
+  step7["Ab ca. 45 min · Läuft nebenher
+In den heißen Ofen geben und backen
+25 min · geschätzt
+Bis: fertig gebacken
+Aktive Arbeit: 29 min · Beaufsichtigung: 0 min\n200 °C"]
+  class step7 processHot;
+end
+style row6 fill:transparent,stroke:transparent
+step6 --> step7

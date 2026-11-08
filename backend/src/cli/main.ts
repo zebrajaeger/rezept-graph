@@ -13,10 +13,14 @@ import { createCompletionClient } from "../llm/completion-client";
 import { readUrlFile } from "../ingestion/url-file";
 import type { PageFetcher, JsonFetcher } from "../http-types";
 import type { writeRecipeOutputs } from "../output/output-writer";
+import type { enrichPlanning } from "../planning/enrich-planning";
+import type { writeTimelineOutputs } from "../planning/timeline-output";
 
 export async function main(argv = process.argv.slice(2), env: NodeJS.ProcessEnv = process.env, deps: {
   fetcher?: PageFetcher; llmFetcher?: JsonFetcher; llmClient?: CompletionClient;
   writeRecipeOutputs?: typeof writeRecipeOutputs;
+  enrichPlanning?: typeof enrichPlanning;
+  writeTimelineOutputs?: typeof writeTimelineOutputs;
 } = {}) {
   const args = parseArgs(argv);
   if (args.command === "help") {
@@ -59,10 +63,18 @@ export async function main(argv = process.argv.slice(2), env: NodeJS.ProcessEnv 
              `  Mermaid: ${outputs.mermaidPath}`,
              `  SVG: ${outputs.svgPath}`,
              `  PNG: ${outputs.pngPath}`,
+             `  Timeline JSON: ${outputs.timelineJsonPath}`,
+             `  Timeline Mermaid: ${outputs.timelineMermaidPath}`,
+             `  Timeline SVG: ${outputs.timelineSvgPath}`,
+             `  Timeline PNG: ${outputs.timelinePngPath}`,
           ].join("\n") + "\n"
         );
       },
-    }, deps.writeRecipeOutputs ? { writeRecipeOutputs: deps.writeRecipeOutputs } : {});
+    }, {
+      ...(deps.writeRecipeOutputs ? { writeRecipeOutputs: deps.writeRecipeOutputs } : {}),
+      ...(deps.enrichPlanning ? { enrichPlanning: deps.enrichPlanning } : {}),
+      ...(deps.writeTimelineOutputs ? { writeTimelineOutputs: deps.writeTimelineOutputs } : {}),
+    });
     return 0;
   }
 

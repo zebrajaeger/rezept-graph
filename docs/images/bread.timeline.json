@@ -1,0 +1,238 @@
+{
+  "language": "de",
+  "endpoint": "fertig gebacken",
+  "assumptions": [
+    "Illustratives Beispiel, kein geprüftes Rezept",
+    "Alle Zeiten geschätzt",
+    "Abkühlzeit nicht enthalten"
+  ],
+  "phases": [
+    {
+      "id": "knead",
+      "processId": "knead",
+      "instruction": "Teig kneten",
+      "attention": "hands-on",
+      "dependencies": [],
+      "duration": {
+        "min": 10,
+        "max": 10,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 0,
+        "max": 0
+      },
+      "end": {
+        "min": 10,
+        "max": 10
+      }
+    },
+    {
+      "id": "rise",
+      "processId": "rise",
+      "instruction": "Teig abgedeckt gehen lassen",
+      "attention": "unattended",
+      "dependencies": [
+        "knead"
+      ],
+      "duration": {
+        "min": 30,
+        "max": 30,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": "Bis sich das Volumen etwa verdoppelt hat",
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 10,
+        "max": 10
+      },
+      "end": {
+        "min": 40,
+        "max": 40
+      }
+    },
+    {
+      "id": "topping",
+      "processId": "topping",
+      "instruction": "Belag schneiden und bereitstellen",
+      "attention": "hands-on",
+      "dependencies": [
+        "knead"
+      ],
+      "duration": {
+        "min": 10,
+        "max": 10,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 10,
+        "max": 10
+      },
+      "end": {
+        "min": 20,
+        "max": 20
+      }
+    },
+    {
+      "id": "form",
+      "processId": "form",
+      "instruction": "Form einfetten",
+      "attention": "hands-on",
+      "dependencies": [
+        "topping"
+      ],
+      "duration": {
+        "min": 3,
+        "max": 3,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "normal",
+      "start": {
+        "min": 20,
+        "max": 20
+      },
+      "end": {
+        "min": 23,
+        "max": 23
+      }
+    },
+    {
+      "id": "on",
+      "processId": "on",
+      "instruction": "Ofen auf 200 °C einschalten",
+      "attention": "hands-on",
+      "dependencies": [],
+      "duration": {
+        "min": 1,
+        "max": 1,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": null,
+      "role": "oven-on",
+      "start": {
+        "min": 23,
+        "max": 23
+      },
+      "end": {
+        "min": 24,
+        "max": 24
+      }
+    },
+    {
+      "id": "heat",
+      "processId": "heat",
+      "instruction": "Ofen vorheizen",
+      "attention": "unattended",
+      "dependencies": [
+        "on"
+      ],
+      "duration": {
+        "min": 15,
+        "max": 15,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": "Erst bei tatsächlicher Ofenbereitschaft einschieben",
+      "returnCue": null,
+      "role": "preheat",
+      "start": {
+        "min": 24,
+        "max": 24
+      },
+      "end": {
+        "min": 39,
+        "max": 39
+      }
+    },
+    {
+      "id": "shape",
+      "processId": "shape",
+      "instruction": "Teig formen und belegen",
+      "attention": "hands-on",
+      "dependencies": [
+        "form",
+        "rise"
+      ],
+      "duration": {
+        "min": 5,
+        "max": 5,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": null,
+      "readiness": null,
+      "returnCue": "Nach der Gehzeit Teig prüfen",
+      "role": "normal",
+      "start": {
+        "min": 40,
+        "max": 40
+      },
+      "end": {
+        "min": 45,
+        "max": 45
+      }
+    },
+    {
+      "id": "bake",
+      "processId": "bake",
+      "instruction": "In den heißen Ofen geben und backen",
+      "attention": "unattended",
+      "dependencies": [
+        "heat",
+        "shape"
+      ],
+      "duration": {
+        "min": 25,
+        "max": 25,
+        "provenance": "estimated",
+        "evidence": "Illustrative estimate for one cook; not measured"
+      },
+      "temperature": "200 °C",
+      "readiness": null,
+      "returnCue": null,
+      "role": "oven-use",
+      "start": {
+        "min": 45,
+        "max": 45
+      },
+      "end": {
+        "min": 70,
+        "max": 70
+      }
+    }
+  ],
+  "suggested": true,
+  "total": {
+    "min": 70,
+    "max": 70
+  },
+  "handsOn": {
+    "min": 29,
+    "max": 29
+  },
+  "attended": {
+    "min": 0,
+    "max": 0
+  }
+}
