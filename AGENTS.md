@@ -1,7 +1,18 @@
+# AGENTS.md
+
+## Basics
+- Für Codeänderungen immer über OpenSpec gehen.
+- Commit Messages immer auf Basis des OpenSpec change Namens machen
+## Code
+- Im Code für Kommentare, Log-Ausgaben etc. immer englisch verwenden.
+
+## Dokumentation
+- Die Dokumentation ist zweisprachig: englisch und deutsch.
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **rezept-graph** (495 symbols, 758 relationships, 29 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **rezept-graph** (584 symbols, 937 relationships, 39 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

@@ -15,6 +15,7 @@ tmp/
 temp/
 
 # Environment and local config
+/backend/config.json
 .env
 .env.*
 *.local
@@ -30,3 +31,9 @@ yarn-error.log*
 Thumbs.db
 .idea/
 .vscode/
+
+# AI
+CLAUDE.md
+.claude
+.codex
+.gitnexus
