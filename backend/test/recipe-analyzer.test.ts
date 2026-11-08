@@ -126,8 +126,7 @@ test("completeWithOptionalCache avoids repeated client calls", async () => {
   };
   const messages = createAnalysisMessages({ text: "Toast toasten" });
   const llmConfig: LlmConfig = {
-    provider: "ollama",
-    baseUrl: "https://ollama.com",
+    baseUrl: "https://example.test/v1",
     model: "test-model",
     apiKeyEnv: "KEY",
     responseCacheDir,

@@ -23,7 +23,7 @@ test("fixed recipe preserves exact serialized outputs, names, prompts and cache 
   assert.equal(createCacheKey(recipe.metadata.sourceUrl!), baseline.pageKey);
   const messages = createAnalysisMessages({ sourceUrl: recipe.metadata.sourceUrl!, text: "Mehl rühren und backen" });
   assert.deepEqual(messages, baseline.messages);
-  assert.equal(createLlmCacheKey({ provider: "openai", baseUrl: "https://example.test/v1", model: "fixture", messages }), baseline.llmKey);
+  assert.equal(createLlmCacheKey({ baseUrl: "https://example.test/v1", model: "fixture", messages }), baseline.llmKey);
   for (const includeIntermediateStates of [true, false]) {
     const outputs = writeRecipeOutputs(recipe, tmp, { includeIntermediateStates });
     assert.equal(path.basename(outputs.jsonPath), `${baseline.slug}.recipe.json`);

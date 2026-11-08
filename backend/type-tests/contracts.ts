@@ -7,8 +7,8 @@ import type { PageFetcher } from "../src/http-types";
 const node: RecipeNode = { id: "tool", type: "tool", label: "Whisk" };
 const config: LlmConfig = {
   baseUrl: "https://example.test", model: "test", apiKeyEnv: "KEY",
-  // @ts-expect-error Only supported provider protocols are accepted.
-  provider: "unsupported",
+  // @ts-expect-error No provider selector exists, even for the supported protocol.
+  provider: "openai",
 };
 const client: CompletionClient = {
   // @ts-expect-error Completion clients return text, not arbitrary JSON objects.
@@ -17,3 +17,9 @@ const client: CompletionClient = {
 // @ts-expect-error Page fetchers must return the consumed response capabilities.
 const fetcher: PageFetcher = async () => ({ ok: true });
 void [node, config, client, fetcher];
+const nativeConfig: LlmConfig = {
+  ...config,
+  // @ts-expect-error Native provider protocols are no longer supported.
+  provider: "ollama",
+};
+void nativeConfig;

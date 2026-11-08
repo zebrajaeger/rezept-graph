@@ -5,9 +5,7 @@ import { isRecord } from "../unknown-data";
 import type { CliArgs } from "../cli/args";
 
 export type CacheMode = "cache-first" | "refresh" | "offline";
-export type LlmProvider = "openai" | "ollama";
 export interface LlmConfig {
-  provider?: LlmProvider;
   baseUrl: string;
   baseUrlEnv?: string;
   model: string;
@@ -23,7 +21,6 @@ export interface RawConfig {
 export interface Config extends Omit<RawConfig, "llm"> { llm: LlmConfig }
 
 const CACHE_MODES = new Set(["cache-first", "refresh", "offline"]);
-const LLM_PROVIDERS = new Set(["openai", "ollama"]);
 
 export function loadConfig(configPath: string, cwd = process.cwd(), env: NodeJS.ProcessEnv = process.env): Config {
   const absolutePath = path.resolve(cwd, configPath);
@@ -79,12 +76,6 @@ export function validateConfig(config: unknown, sourcePath: string): asserts con
   }
   if (!isNonEmptyString(llm.model)) missing.push("llm.model");
   if (!isNonEmptyString(llm.apiKeyEnv)) missing.push("llm.apiKeyEnv");
-  if (
-    llm.provider !== undefined &&
-    (!isNonEmptyString(llm.provider) || !LLM_PROVIDERS.has(llm.provider))
-  ) {
-    missing.push("llm.provider");
-  }
   if (typeof llm.timeoutMs !== "number" || !Number.isInteger(llm.timeoutMs) || llm.timeoutMs < 1) {
     missing.push("llm.timeoutMs");
   }
@@ -114,7 +105,6 @@ function normalizeConfig(config: RawConfig, baseDir: string, env: NodeJS.Process
 
   return {
     llm: {
-      provider: config.llm.provider || "openai",
       baseUrl: baseUrl.replace(/\/+$/, ""),
       baseUrlEnv: config.llm.baseUrlEnv,
       model: config.llm.model,

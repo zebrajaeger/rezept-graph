@@ -15,7 +15,7 @@ All maintained backend application modules and runtime tests SHALL be TypeScript
 Deutsch: Backend und Tests werden strikt typisiert; nur die minimale Startdatei bleibt JavaScript. Pauschale Umgehungen der Typprüfung sind nicht zulässig.
 
 #### Scenario: Source or test has an incompatible contract
-- **WHEN** a source module or runtime test passes an invalid provider value, graph node type or dependency signature
+- **WHEN** a source module or runtime test supplies an obsolete provider selector, invalid graph node type or dependency signature
 - **THEN** `npm run typecheck` exits nonzero with a diagnostic
 
 #### Scenario: Compile-time negative contracts remain enforced

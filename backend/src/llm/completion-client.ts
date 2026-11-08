@@ -16,7 +16,6 @@ export async function completeWithOptionalCache({ messages, llmConfig, client }:
   const cached = await getOrCreateLlmResponse({
     cacheDir: llmConfig.responseCacheDir,
     cacheKeyParts: {
-      provider: llmConfig.provider || "openai",
       baseUrl: llmConfig.baseUrl,
       model: llmConfig.model,
       messages,

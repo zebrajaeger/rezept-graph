@@ -29,7 +29,6 @@ test("loadConfig can resolve LLM base URL from env", () => {
     configPath,
     JSON.stringify({
       llm: {
-        provider: "openai",
         baseUrlEnv: "BASE_URL",
         model: "test-model",
         apiKeyEnv: "API_KEY",

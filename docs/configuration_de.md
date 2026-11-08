@@ -26,19 +26,41 @@ angepasst werden, beispielsweise `outputs` → `backend/outputs`.
 
 | Feld | Bedeutung |
 | --- | --- |
-| `llm.baseUrl` | Basis-URL des Anbieters. |
+| `llm.baseUrl` | OpenAI-kompatibler API-Stammpfad, einschließlich `/v1`, falls vom Server benötigt. |
 | `llm.baseUrlEnv` | Optionaler Name der Umgebungsvariable für die Basis-URL. |
-| `llm.provider` | `openai` für OpenAI-kompatible `/v1/chat/completions`, `ollama` für native `/api/chat`. |
 | `llm.model` | Modellname. |
 | `llm.apiKeyEnv` | Name der Umgebungsvariable mit dem API-Schlüssel. |
 | `llm.timeoutMs` | Zeitlimit in Millisekunden. |
 
-Lokale Anbieter wie LM Studio oder kompatible Gateways können verwendet werden,
-solange sie `/v1/chat/completions` anbieten.
+Unterstützt werden ausschließlich OpenAI-kompatible Chat-Completions-APIs,
+unabhängig vom Anbieter. Der Client entfernt abschließende Schrägstriche und hängt
+`/chat/completions` an den API-Stammpfad an; `/v1` wird nicht automatisch ergänzt.
+Aus `http://localhost:1234/v1` wird beispielsweise
+`http://localhost:1234/v1/chat/completions`. Eigene Gateway-Stammpfade sind möglich.
 
-Für direkten Zugriff auf Ollama Cloud verwende `provider: "ollama"` und die
-Basis-URL `https://ollama.com`. Die native Cloud-API liegt unter
-`https://ollama.com/api/chat` und verwendet `Authorization: Bearer ...`.
+Der Server muss `model`, `messages` und den JSON-Modus
+(`response_format: { "type": "json_object" }`) akzeptieren und Text unter
+`choices[0].message.content` zurückgeben. Die konfigurierte Umgebungsvariable
+liefert den optionalen Bearer-Token. Timeouts und Antwortcache bleiben erhalten;
+native Protokoll-Fallbacks, Responses API und Streaming werden nicht unterstützt.
+
+## Migration bisheriger Provider
+
+- Entferne `llm.provider` vollständig, auch bisherige Werte wie `server`, `ollama`
+  oder `openai`. In Code und typisierter Konfiguration gibt es keine Auswahl mehr.
+  Veraltete Felder in externem JSON werden ignoriert und nicht in die normalisierte
+  Konfiguration übernommen.
+- Prüfe den OpenAI-kompatiblen API-Stammpfad und die JSON-Modus-Unterstützung.
+  Übernimm einen nativen API-Stammpfad nicht ungeprüft.
+- Für lokales Ollama verwende `http://localhost:11434/v1`. Anfragen gehen damit an
+  `/v1/chat/completions`, nie an das native `/api/chat`. Der native Zugriff auf
+  Ollama Cloud entfällt; der Dienst muss die oben beschriebene kompatible API anbieten.
+- Hinterlege Zugangsdaten in der durch `apiKeyEnv` benannten Umgebungsvariable,
+  nicht direkt als `apiKey`. Private Konfigurationen werden nicht automatisch geändert.
+- Antwortcache-Schlüssel enthalten nur noch API-Stammpfad, Modell und Nachrichten.
+  Alte Einträge mit Provider-Komponente (auch OpenAI-Einträge) werden nicht mehr
+  getroffen: Die nächste Anfrage benötigt einen neuen LLM-Aufruf. Alte Dateien
+  werden weder migriert noch gelöscht; weitere identische Anfragen nutzen den neuen Eintrag.
 
 ## Umgebungsvariablen
 

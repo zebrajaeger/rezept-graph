@@ -37,7 +37,7 @@ if (-not (Test-Path config.json)) {
 }
 ```
 
-Adjust the model, provider, and environment variables as described in the
+Adjust the model, OpenAI-compatible API root, and environment variables as described in the
 [configuration guide](configuration_en.md). Then you can
 [analyze recipes](cli_en.md).
 

@@ -64,14 +64,12 @@ test("external config and provider payloads are checked before use", async () =>
   for (const config of [null, [], {}, { llm: 2, cache: null }]) {
     assert.throws(() => validateConfig(config, "test.json"), /Config-Datei/);
   }
-  for (const provider of ["openai", "ollama"] as const) {
     for (const payload of [null, [], {}, { choices: [null] }, { message: { content: 42 } }]) {
-      const client = createLlmClient({ provider, baseUrl: "https://example.test", model: "test", apiKeyEnv: "KEY" }, {
+      const client = createLlmClient({ baseUrl: "https://example.test", model: "test", apiKeyEnv: "KEY" }, {
         env: {}, fetcher: async () => ({ ok: true, status: 200, json: async () => payload }),
       });
       await assert.rejects(client.complete([]), /keinen Textinhalt/);
     }
-  }
 });
 
 test("validated recipes preserve nullable fields and reject malformed members", () => {

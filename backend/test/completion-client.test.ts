@@ -27,7 +27,7 @@ test("uncached completion composition preserves provider request and repeats cal
 test("cached composition reuses exact raw invalid analysis responses without another provider call", async (t) => {
   const responseCacheDir = fs.mkdtempSync(path.join(os.tmpdir(), "completion-composition-"));
   t.after(() => fs.rmSync(responseCacheDir, { recursive: true, force: true }));
-  const config = { provider: "ollama" as const, baseUrl: "https://example.test", model: "fixture", apiKeyEnv: "KEY", responseCacheDir };
+  const config = { baseUrl: "https://example.test", model: "fixture", apiKeyEnv: "KEY", responseCacheDir };
   let calls = 0;
   const raw = "```json\n{\"invalid\":true}\n```";
   const client = createCompletionClient(config, {}, { complete: async () => { calls++; return raw; } });
@@ -36,6 +36,6 @@ test("cached composition reuses exact raw invalid analysis responses without ano
   }
   assert.equal(calls, 1);
   assert.equal(await client.complete([]), raw);
-  const key = createLlmCacheKey({ provider: "ollama", baseUrl: config.baseUrl, model: config.model, messages: [] });
+  const key = createLlmCacheKey({ baseUrl: config.baseUrl, model: config.model, messages: [] });
   assert.equal(JSON.parse(fs.readFileSync(path.join(responseCacheDir, `${key}.json`), "utf8")).content, raw);
 });

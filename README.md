@@ -18,3 +18,7 @@ data, ingredient lists, and Mermaid graphs through a CLI.
 **Voraussetzung / Requirement:** Node.js **24+**.
 
 Konfigurationsvorlage / Configuration template: [`config.example.json`](config.example.json).
+
+Nur OpenAI-kompatible LLM-APIs / OpenAI-compatible LLM APIs only:
+[Migration (DE)](docs/configuration_de.md#migration-bisheriger-provider) ·
+[Migration (EN)](docs/configuration_en.md#migration-from-legacy-providers).
