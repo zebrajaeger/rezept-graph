@@ -4,6 +4,55 @@ CLI-first Anwendung, die Rezept-URLs einliest, HTML-Seiten lokal cached, Rezepti
 
 ### Einrichtung / Setup
 
+Voraussetzung / Prerequisite: **Node.js 24 oder neuer / Node.js 24 or newer**.
+Das Backend und seine Tests sind in streng geprüftem TypeScript geschrieben.
+The backend and its tests use strictly checked TypeScript, compiled to CommonJS.
+
+```bash
+cd backend
+npm ci
+npm run typecheck
+npm run build
+npm test
+```
+
+Deutsch: `npm start -- ...` baut vor jedem Start automatisch neu. Für den direkten
+Aufruf `node backend/src/cli.js ...` vom Hauptverzeichnis muss zuerst einmal
+`npm --prefix backend run build` ausgeführt werden. Die kleine JavaScript-Datei
+ist nur ein Kompatibilitätsadapter; die Anwendung liegt in `backend/src/*.ts`.
+`backend/dist/` enthält ausschließlich kompilierte Anwendungsmodule,
+`backend/.test-dist/` die kompilierten Tests und deren Anwendungsmodule.
+Beide Ausgabeordner werden vor ihrem jeweiligen Build geleert und nicht versioniert.
+
+English: `npm start -- ...` rebuilds automatically before each invocation. Before
+using the direct `node backend/src/cli.js ...` command from the project root, run
+`npm --prefix backend run build`. That small JavaScript file is only a compatibility
+adapter; application code lives in `backend/src/*.ts`. `backend/dist/` contains
+compiled application modules only; `backend/.test-dist/` contains compiled tests
+and their application modules. Each build cleans only its own output directory;
+neither directory is committed. No TypeScript runtime loader is required.
+
+```mermaid
+flowchart LR
+  S["src/*.ts"] --> C["TypeScript compiler / Compiler"]
+  C --> D["dist/*.js · CommonJS"]
+  D --> N["Node.js CLI"]
+  T["test/*.ts + type-tests/*.ts"] --> Q["Strict typecheck / Strikte Typprüfung"]
+  S --> Q
+  Q --> R["Compiled runtime tests / Kompilierte Laufzeittests"]
+```
+
+Deutsch: `npm test` prüft zuerst sämtliche Typen einschließlich negativer
+Vertragstests und führt danach die kompilierten Laufzeittests aus. JSON aus
+Config, Cache und LLM wird weiterhin zur Laufzeit geprüft oder als `unknown`
+behandelt. TypeScript ersetzt diese Prüfungen nicht. Das Frontend enthält noch
+keine Anwendung und ist von dieser Migration nicht betroffen.
+
+English: `npm test` first checks all types, including negative contract fixtures,
+then runs compiled runtime tests. External configuration, cache and LLM JSON
+remains runtime-validated or contained as `unknown`; TypeScript does not replace
+runtime checks. The frontend has no application code yet and is unchanged.
+
 Deutsch: Kopiere im Projekt-Hauptverzeichnis `config.example.json` nach `config.json`
 und passe Modell, Anbieter und Umgebungsvariablen an. `config.json` bleibt lokal und
 wird von Git ignoriert. Eine bestehende `backend/config.json` muss manuell nach oben
