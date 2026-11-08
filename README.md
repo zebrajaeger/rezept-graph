@@ -2,12 +2,52 @@
 
 CLI-first Anwendung, die Rezept-URLs einliest, HTML-Seiten lokal cached, Rezeptinhalt extrahiert und daraus mit einer OpenAI-kompatiblen LLM strukturierte Rezeptdaten, Zutatenlisten und Mermaid-Graphen erzeugt.
 
+### Einrichtung / Setup
+
+Deutsch: Kopiere im Projekt-Hauptverzeichnis `config.example.json` nach `config.json`
+und passe Modell, Anbieter und Umgebungsvariablen an. `config.json` bleibt lokal und
+wird von Git ignoriert. Eine bestehende `backend/config.json` muss manuell nach oben
+verschoben werden; vorhandene Root-Dateien nicht überschreiben. Relative Cache- und
+Ausgabepfade beziehen sich auf den Config-Ordner und müssen beim Umzug angepasst
+werden (z. B. `outputs` → `backend/outputs`).
+
+English: From the project root, copy `config.example.json` to `config.json` and
+configure the model, provider and environment variables. The local config is
+ignored by Git. Move an existing `backend/config.json` manually, without overwriting
+an existing root config. Rebase relative cache/output paths to preserve their
+destinations (for example, `outputs` → `backend/outputs`).
+
+```bash
+cp config.example.json config.json
+```
+
+PowerShell: `Copy-Item config.example.json config.json` (nur wenn das Ziel fehlt / only if the destination is absent).
+
 ### Backend CLI
+
+Aus dem Hauptverzeichnis / From the project root:
+
+```bash
+node backend/src/cli.js analyze --urls backend/examples/recipe-urls.txt
+```
+
+Aus dem Backend / From the backend directory:
 
 ```bash
 cd backend
-npm start -- analyze --config config.example.json --urls examples/recipe-urls.txt
+npm start -- analyze --urls examples/recipe-urls.txt
 ```
+
+Ohne `--config` wird immer `config.json` im Projekt-Hauptverzeichnis geladen.
+Explizite relative Config-Pfade beziehen sich weiterhin auf das Arbeitsverzeichnis.
+Zum Verwenden der Vorlage im Backend: `--config ../config.example.json`.
+`backend/go.cmd` funktioniert unabhängig vom Aufrufverzeichnis.
+
+Without `--config`, the CLI always loads project-root `config.json`. Explicit relative
+config paths remain relative to the working directory. From backend, use
+`--config ../config.example.json` to select the example. `backend/go.cmd` works
+independently of the caller's working directory. The example retains cache/output
+locations under `backend/`; URL examples stay in `backend/examples/`.
 
 Wichtige Optionen:
 
@@ -30,7 +70,7 @@ Aufgenommen werden nur Rezepte von `https://www.chefkoch.de/rs/s0/zufall/Rezepte
 
 ### Config
 
-Siehe `backend/config.example.json`. Die LLM-Konfiguration ist OpenAI-kompatibel:
+Siehe `config.example.json` im Hauptverzeichnis. Die LLM-Konfiguration ist OpenAI-kompatibel:
 
 - `llm.baseUrl`
 - `llm.baseUrlEnv` optional, falls die Base-URL aus `.env` kommen soll

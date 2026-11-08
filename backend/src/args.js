@@ -9,7 +9,7 @@ function parseArgs(argv) {
   const command = tokens.shift() || "analyze";
   const options = {
     command,
-    configPath: "config.json",
+    configPath: path.resolve(__dirname, "..", "..", "config.json"),
     urlsPath: path.join("examples", "recipe-urls.txt"),
     cacheMode: undefined,
     outputDir: undefined,
@@ -94,21 +94,24 @@ function parseIntegerOption(name, rawValue) {
 function printHelp(stream = process.stdout) {
   stream.write(`Rezept Graph CLI
 
-Kommandos:
-  analyze          Analysiert URLs aus einer Datei. Standardkommando.
-  seed-chefkoch   Fuellt die URL-Datei explizit mit Chefkoch-Zufallsrezepten.
+Commands:
+  analyze          Analyze URLs from a file. Default command.
+  seed-chefkoch   Explicitly seed the URL file with random Chefkoch recipes.
 
-Optionen:
-  --config <path>                 Pfad zur Config-Datei (Standard: config.json)
-  --urls <path>                   Pfad zur URL-Datei (Standard: examples/recipe-urls.txt)
-  --cache-mode <mode>             cache-first, refresh oder offline
-  --output-dir <path>             Ausgabeordner
-  --intermediate-states <mode>    show oder hide
-  --limit <number>                Anzahl zu seedender URLs fuer seed-chefkoch
+Options:
+  --config <path>                 Config path (default: project-root config.json)
+  --urls <path>                   URL file (default: examples/recipe-urls.txt, relative to working directory)
+  --cache-mode <mode>             cache-first, refresh or offline
+  --output-dir <path>             Output directory
+  --intermediate-states <mode>    show or hide
+  --limit <number>                Number of URLs to seed for seed-chefkoch
 
-Beispiele:
-  npm start -- analyze --config config.example.json --urls examples/recipe-urls.txt
+Examples (from backend):
+  npm start -- analyze --config ../config.example.json --urls examples/recipe-urls.txt
   npm start -- seed-chefkoch --urls examples/recipe-urls.txt --limit 5
+
+Example (from project root):
+  node backend/src/cli.js analyze --urls backend/examples/recipe-urls.txt
 `);
 }
 

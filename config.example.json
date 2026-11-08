@@ -8,11 +8,11 @@
     "timeoutMs": 60000
   },
   "cache": {
-    "directory": ".cache/recipe-pages",
+    "directory": "backend/.cache/recipe-pages",
     "mode": "cache-first"
   },
   "output": {
-    "directory": "outputs",
+    "directory": "backend/outputs",
     "includeIntermediateStates": true
   }
 }
