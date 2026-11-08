@@ -10,8 +10,18 @@
 
 ## Dokumentation
 - Die Dokumentation ist zweisprachig: englisch und deutsch.
+  - Pro Sprache eine Datei mit i18n Suffix, wie `_de` oder `_en`.
+- Im Projekt-Root gibt es die Readme, Details, Bilder etc. kommen in den Unterordner `docs`. 
+- Die Dokumentation so strukturieren, dass sie für Menschen gut erfassbar ist. Zum Beispiel:  statt einer langen README.md, dort nur eine Übersicht mit links zu den Details in separaten Dateien.
 - Verwende Mermaid Diagramme, wenn es einen Mehrwert bietet.
 - Erzeuge Screenshots und binde sie ein, wenn es einen Mehrwert bietet.
+
+## Organisation
+- Ich möchte das Projekt auch nach einer längeren Pause wieder aufnehmen können.
+  - Dazu gibt es im Hauptverzeichnis die Datei `next_step.md`.
+  - Die `next_step.md` muss immer aktuell gehalten werden.
+  - Gleich am Anfang steht, was ein kleiner möglicher Einstiegspunkt sein könnte.
+  - Es soll eine Sektion geben, welche den aktuellen Zustand in wenigen Worten beschreibt.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
