@@ -1,0 +1,10 @@
+
+diffusers>=0.35,<1
+transformers>=4.51,<5
+accelerate>=1.6,<2
+safetensors>=0.5
+sentencepiece
+protobuf
+fastapi>=0.115
+uvicorn>=0.34
+pillow>=11
